@@ -85,7 +85,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 e.printStackTrace();
         }
     }
-    
 
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
@@ -169,6 +168,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configurePathPlanner();
     }
 
     /**
@@ -225,6 +225,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configurePathPlanner();
     }
 
     /**
