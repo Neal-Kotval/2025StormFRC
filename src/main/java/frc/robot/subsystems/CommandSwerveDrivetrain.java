@@ -13,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -56,12 +57,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+    
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
         AutoBuilder.configure(
             ()->this.getState().Pose, // Robot pose supplier
-            (Pose2d)->this.seedFieldCentric(), // Method to reset odometry (will be called if your auto has a starting pose)
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
             ()->this.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> {
                 // Convert ChassisSpeeds to a SwerveRequest and apply it
@@ -85,7 +87,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 e.printStackTrace();
         }
     }
-
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -332,6 +333,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
+    
     
 
 }
