@@ -55,6 +55,7 @@ public class RobotContainer {
     }
 
     
+    
 
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
@@ -89,6 +90,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }
