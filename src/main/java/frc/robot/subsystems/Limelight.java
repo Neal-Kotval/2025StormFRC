@@ -36,6 +36,14 @@ public class Limelight extends SubsystemBase{
 		return NetworkTableInstance.getDefault().getTable("limelight");
 	}
 
+	public void checkIfZero() {
+		for (LimelightTarget_Fiducial target: result.targets_Fiducials) {
+			if (target.fiducialID == 0) {
+			  System.out.println("FOUND");
+			}
+		}
+	}
+
 	
 	//public void initDefaultCommand() {
 		// Set the default command for a subsystem here.
