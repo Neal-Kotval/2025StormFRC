@@ -37,7 +37,7 @@ public class AlignCommand extends Command {
     this.m_drivetrain = drivetrain;
     this.m_Limelight = limelight;
     this.tagID = TAGID;
-    addRequirements(m_Limelight);
+    // addRequirements(m_Limelight, m_drivetrain);
   }
 
 
