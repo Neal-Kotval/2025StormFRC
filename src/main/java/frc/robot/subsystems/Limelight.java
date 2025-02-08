@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 //import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 
 /**
  * An example subsystem. You can replace me with your own Subsystem.
@@ -37,11 +38,8 @@ public class Limelight extends SubsystemBase{
 	}
 
 	public void checkIfZero() {
-		for (LimelightTarget_Fiducial target: result.targets_Fiducials) {
-			if (target.fiducialID == 0) {
-			  System.out.println("FOUND");
-			}
-		}
+
+		
 	}
 
 	
