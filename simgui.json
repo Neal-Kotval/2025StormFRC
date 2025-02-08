@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "Other Devices": {
+      "window": {
+        "visible": false
+      }
+    },
     "Timing": {
       "window": {
         "visible": false
@@ -10,6 +15,9 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/Shuffleboard/Sys Id debug/Rotation sysid": "Command",
+      "/Shuffleboard/Sys Id debug/Steer sysid": "Command",
+      "/Shuffleboard/Sys Id debug/Translation sysid": "Command",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Module 0": "Mechanism2d",

@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.generated.TunerConstants;
 // import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
@@ -35,6 +37,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -115,7 +118,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             this
         )
     );
-    
 
     /*
      * SysId routine for characterizing rotation.
@@ -329,7 +331,26 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    
-    
+    /**
+     * Kinematic path following constraints
+     *
+     * @param maxVelocityMPS Max linear velocity (M/S)
+     * @param maxAccelerationMPSSq Max linear acceleration (M/S^2)
+     * @param maxAngularVelocityRadPerSec Max angular velocity (Rad/S)
+     * @param maxAngularAccelerationRadPerSecSq Max angular acceleration (Rad/S^2)
+     * @param nominalVoltageVolts The nominal battery voltage (Volts)
+     * @param unlimited Should the constraints be unlimited
+     */
+    public Command createDriveToPose(Pose2d pose) {
+        PathConstraints swerveConstraints = new PathConstraints(
+            12,
+            12,
+            540.0,
+            720.0,
+            12.0,
+            false
+        );
+        return AutoBuilder.pathfindToPose(pose, swerveConstraints, 0.0);
+    }
 
 }
