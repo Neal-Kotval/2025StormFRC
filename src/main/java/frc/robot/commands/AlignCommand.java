@@ -8,7 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.LimelightHelpers.RawFiducial;
 import edu.wpi.first.math.controller.PIDController;
@@ -23,7 +23,7 @@ class PIDControllerConfigurable extends PIDController {
   }
 }
 public class AlignCommand extends Command {
-  private final CommandSwerveDrivetrain m_drivetrain;
+  private final Swerve m_drivetrain;
   private final VisionSubsystem m_Limelight;
   private final int tagID;
 
@@ -33,7 +33,7 @@ public class AlignCommand extends Command {
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
 
-  public AlignCommand(CommandSwerveDrivetrain drivetrain, VisionSubsystem limelight, int TAGID) {
+  public AlignCommand(Swerve drivetrain, VisionSubsystem limelight, int TAGID) {
     this.m_drivetrain = drivetrain;
     this.m_Limelight = limelight;
     this.tagID = TAGID;
