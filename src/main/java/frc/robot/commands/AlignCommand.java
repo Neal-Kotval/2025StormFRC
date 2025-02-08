@@ -37,7 +37,7 @@ public class AlignCommand extends Command {
     this.m_drivetrain = drivetrain;
     this.m_Limelight = limelight;
     this.tagID = TAGID;
-    // addRequirements(m_Limelight, m_drivetrain);
+
   }
 
 
@@ -60,10 +60,10 @@ public class AlignCommand extends Command {
         this.end(true);
       }
 
-      SmartDashboard.putNumber("txnc", fiducial.txnc);
-      SmartDashboard.putNumber("distToRobot", fiducial.distToRobot);
-      SmartDashboard.putNumber("rotationalPidController", rotationalRate);
-      SmartDashboard.putNumber("xPidController", velocityX);
+      // SmartDashboard.putNumber("txnc", fiducial.txnc);
+      // SmartDashboard.putNumber("distToRobot", fiducial.distToRobot);
+      // SmartDashboard.putNumber("rotationalPidController", rotationalRate);
+      // SmartDashboard.putNumber("xPidController", velocityX);
       m_drivetrain.setControl(
           alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));
  

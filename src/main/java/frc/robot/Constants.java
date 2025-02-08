@@ -23,7 +23,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class VisionConstants {
-    public static final String LIMELIGHT_NAME = "";
+    public static final String LIMELIGHT_NAME = "limelight";
     public static final Distance LIMELIGHT_LENS_HEIGHT = Distance.ofBaseUnits(8, Inches);
     public static final Angle LIMELIGHT_ANGLE = Angle.ofBaseUnits(0, Degrees);
 
