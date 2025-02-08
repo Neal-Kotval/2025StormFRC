@@ -22,6 +22,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
   public static class VisionConstants {
     public static final String LIMELIGHT_NAME = "limelight";
     public static final Distance LIMELIGHT_LENS_HEIGHT = Distance.ofBaseUnits(8, Inches);
@@ -30,5 +31,23 @@ public final class Constants {
     public static final Distance REEF_APRILTAG_HEIGHT = Distance.ofBaseUnits(6.875, Inches);
     public static final Distance PROCCESSOR_APRILTAG_HEIGHT = Distance.ofBaseUnits(45.875, Inches);
     public static final Distance CORAL_APRILTAG_HEIGHT = Distance.ofBaseUnits(53.25, Inches);
+  }
+
+  public static class PIDvalues {
+    public static final double rotationalKP = 0.07;
+    public static final double rotationalKI = 0;
+    public static final double rotationalKD = 0;
+    public static final double rotationalTolerance = 0.005;
+
+    public static final double XtranslationalKP = 0.28;
+    public static final double XtranslationalKI = 0.01;
+    public static final double XtranslationalKD = 0.01;
+    public static final double XtranslationalTolerance = 0.01;
+
+    public static final double YtranslationalKP = 0.3;
+    public static final double YtranslationalKI = 0;
+    public static final double YtranslationalKD = 0;
+    public static final double YtranslationalTolerance = 0.3;
+
   }
 }
