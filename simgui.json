@@ -26,11 +26,6 @@
       "/SmartDashboard/Module 3": "Mechanism2d"
     },
     "windows": {
-      "/FMSInfo": {
-        "window": {
-          "visible": true
-        }
-      },
       "/Pose": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -42,15 +37,27 @@
           "visible": true
         }
       },
+      "/Shuffleboard/Sys Id debug/Rotation sysid": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Sys Id debug/Steer sysid": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Sys Id debug/Translation sysid": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Auto Chooser": {
         "window": {
           "visible": true
         }
       }
     }
-  },
-  "NetworkTables Info": {
-    "visible": true
   },
   "NetworkTables View": {
     "visible": false
