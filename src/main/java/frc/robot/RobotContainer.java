@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -39,7 +41,6 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -113,4 +114,28 @@ public class RobotContainer {
         debugTab.add(m_swerveSysId.createRotationSysIdCommand().withName("Rotation sysid"));
 
     }
+
+    // private void createAbsolutePath(Pose2d pose) {
+    //     Pose2d currentPose = drivetrain.getState().Pose;
+    //     double currentX = currentPose.getX();
+    //     double currentY = currentPose.getY();
+
+    //     Pose2d finalPose = pose;
+    //     double finalX = pose.getX();
+    //     double finalY = pose.getY();
+
+    //     if (currentX > 0 && currentY > 0) {
+    //         return;
+    //     }
+
+    //     double mostNegativeCoordinate = currentX < currentY ? currentX : currentY;
+    //     drivetrain.resetPose(new Pose2d(new Translation2d(currentX-mostNegativeCoordinate, currentY-mostNegativeCoordinate), new Rotation2d(currentPose.getRotation().getDegrees())));
+    //     Pose2d newFinalPose = new Pose2d(new Translation2d(finalX-mostNegativeCoordinate, finalY-mostNegativeCoordinate), new Rotation2d(finalPose.getRotation().getDegrees()));
+
+    //     Command absolutePath = drivetrain.createDriveToPose(newFinalPose);
+
+    //     absolutePath.schedule();
+
+    //     drivetrain.resetPose(pose);
+    // }
 }

@@ -36,31 +36,28 @@
         "window": {
           "visible": true
         }
-      },
-      "/Shuffleboard/Sys Id debug/Rotation sysid": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Sys Id debug/Steer sysid": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/Shuffleboard/Sys Id debug/Translation sysid": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Auto Chooser": {
-        "window": {
-          "visible": true
-        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "Transitory Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
-    "visible": true
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "Subscribers": {
+        "open": true
+      }
+    }
   },
   "NetworkTables View": {
     "visible": false
