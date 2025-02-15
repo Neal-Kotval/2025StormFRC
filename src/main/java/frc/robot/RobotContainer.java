@@ -114,28 +114,4 @@ public class RobotContainer {
         debugTab.add(m_swerveSysId.createRotationSysIdCommand().withName("Rotation sysid"));
 
     }
-
-    // private void createAbsolutePath(Pose2d pose) {
-    //     Pose2d currentPose = drivetrain.getState().Pose;
-    //     double currentX = currentPose.getX();
-    //     double currentY = currentPose.getY();
-
-    //     Pose2d finalPose = pose;
-    //     double finalX = pose.getX();
-    //     double finalY = pose.getY();
-
-    //     if (currentX > 0 && currentY > 0) {
-    //         return;
-    //     }
-
-    //     double mostNegativeCoordinate = currentX < currentY ? currentX : currentY;
-    //     drivetrain.resetPose(new Pose2d(new Translation2d(currentX-mostNegativeCoordinate, currentY-mostNegativeCoordinate), new Rotation2d(currentPose.getRotation().getDegrees())));
-    //     Pose2d newFinalPose = new Pose2d(new Translation2d(finalX-mostNegativeCoordinate, finalY-mostNegativeCoordinate), new Rotation2d(finalPose.getRotation().getDegrees()));
-
-    //     Command absolutePath = drivetrain.createDriveToPose(newFinalPose);
-
-    //     absolutePath.schedule();
-
-    //     drivetrain.resetPose(pose);
-    // }
 }

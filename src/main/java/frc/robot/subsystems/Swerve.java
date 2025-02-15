@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -277,6 +278,16 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 );
                 m_hasAppliedOperatorPerspective = true;
             });
+        }
+
+        /*
+         * Periodically check for negative translational pose.
+         */
+        if (this.getState().Pose.getX() < 0) {
+            resetPose(new Pose2d(new Translation2d(0,this.getState().Pose.getY()), this.getState().Pose.getRotation()));
+        }
+        if (this.getState().Pose.getY() < 0) {
+            resetPose(new Pose2d(new Translation2d(this.getState().Pose.getX(), 0), this.getState().Pose.getRotation()));
         }
     }
 
