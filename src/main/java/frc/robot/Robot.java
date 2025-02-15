@@ -17,6 +17,9 @@ import frc.robot.subsystems.Swerve;
  */
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.ctre.phoenix6.Utils;
+
 // import edu.wpi.first.networktables.NetworkTable;
 // import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -66,11 +69,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", ty);
     SmartDashboard.putNumber("LV", tv);
     SmartDashboard.putNumber("LA", ta);
-    SmartDashboard.putNumber("PoseX", drivetrain.getState().Pose.getX());
-    SmartDashboard.putNumber("PoseY", drivetrain.getState().Pose.getY());
-    SmartDashboard.putNumber("PoseRotation", drivetrain.getState().Pose.getRotation().getDegrees());
-
-
+    
     CommandScheduler.getInstance().run();
   }
 

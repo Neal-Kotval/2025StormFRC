@@ -36,14 +36,21 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
-    "Transitory Values": {
-      "open": false
-    },
     "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
+    "transitory": {
       "SmartDashboard": {
         "open": true
       }
@@ -59,9 +66,6 @@
       }
     },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
   },
   "Plot": {
     "Plot <0>": {

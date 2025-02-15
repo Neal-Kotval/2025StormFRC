@@ -71,13 +71,13 @@
     },
     "###FMS": {
       "Collapsed": "0",
-      "Pos": "919,254",
+      "Pos": "49,397",
       "Size": "169,184"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "219,557",
-      "Size": "796,121"
+      "Size": "796,138"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -96,7 +96,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "250,277",
+      "Pos": "594,76",
       "Size": "750,185"
     },
     "###NetworkTables Info": {
