@@ -48,6 +48,9 @@ public final class Constants {
     public static final double YtranslationalKI = 0;
     public static final double YtranslationalKD = 0;
     public static final double YtranslationalTolerance = 0.3;
+  }
 
+  public static class CANids {
+    public static final int armMotor = 2;
   }
 }

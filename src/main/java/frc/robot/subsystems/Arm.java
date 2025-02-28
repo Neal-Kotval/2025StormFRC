@@ -5,6 +5,8 @@ import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.ctre.phoenix6.controls.Follower;
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
@@ -14,9 +16,8 @@ import com.ctre.phoenix6.controls.Follower;
  * Because Phoenix 6 does not include a built-in gravity compensation parameter (kG),
  * we add an arbitrary feedforward (GRAVITY_FF) to the control request to help hold the elevator.
  */
-public class ElevatorSubsystem extends SubsystemBase {
-    private final TalonFX masterMotor;
-    private final TalonFX followerMotor;
+public class Arm extends SubsystemBase {
+    private final TalonFX armMotor;
     // Create a PositionVoltage control request (using slot 0 for PID gains).
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
@@ -40,13 +41,8 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param masterID CAN ID for the master Falcon 500
      * @param followerID CAN ID for the follower Falcon 500
      */
-    public ElevatorSubsystem(int masterID, int followerID) {
-        masterMotor = new TalonFX(masterID);
-        followerMotor = new TalonFX(followerID);
-
-        // Set the follower motor to mirror the master motor.
-        followerMotor.setControl(new Follower(masterID, false));
-
+    public Arm() {
+        armMotor = new TalonFX(Constants.CANids.armMotor);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -54,16 +50,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         config.Slot0.kI = kI;
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
-        masterMotor.getConfigurator().apply(config);
+        armMotor.getConfigurator().apply(config);
     }
 
     /**
      * Reads the current elevator position in rotations.
      * @return The elevator position (in rotations).
      */
-    public double getElevatorPosition() {
+    public double getArmPosition() {
         // Get the sensor position (in ticks) and convert to rotations.
-        double ticks = masterMotor.getPosition().getValueAsDouble();
+        double ticks = armMotor.getPosition().getValueAsDouble();
         return (ticks / TICKS_PER_REV) * GEAR_RATIO;
     }
 
@@ -72,11 +68,11 @@ public class ElevatorSubsystem extends SubsystemBase {
      * This method converts the target position to sensor ticks and adds a feedforward for gravity.
      * @param targetRotations The desired elevator position (in rotations).
      */
-    public void setElevatorPosition(double targetRotations) {
+    public void setArmPosition(double targetRotations) {
         // Convert the desired position from rotations to sensor ticks.
         double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
         // Send the closed-loop control request with the target and add our manually tuned gravity feedforward.
-        masterMotor.setControl(positionControl.withPosition(targetTicks)
+        armMotor.setControl(positionControl.withPosition(targetTicks)
                                                .withFeedForward(kG));
     }
 
@@ -87,18 +83,22 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public boolean atTargetPosition(double targetRotations) {
         double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
-        double currentTicks = masterMotor.getPosition().getValueAsDouble();
+        double currentTicks = armMotor.getPosition().getValueAsDouble();
         return Math.abs(currentTicks - targetTicks) < TOLERANCE_TICKS;
     }
 
     public void setEncoder(double pos) {
-        masterMotor.setPosition(pos);
+        armMotor.setPosition(pos);
     }
 
     /**
      * Stops the elevator by setting the motor output to zero.
      */
-    public void stopElevator() {
-        masterMotor.set(0);
+    public void stopArm() {
+        armMotor.set(0);
+    }
+
+    public void setArmSpeed(double speed) {
+        armMotor.set(speed);
     }
 }
