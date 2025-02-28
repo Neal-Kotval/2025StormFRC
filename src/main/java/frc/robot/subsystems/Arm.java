@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.controls.Follower;
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
  * The master motor runs a closed-loop PID based on its integrated relative encoder,
@@ -35,12 +34,6 @@ public class Arm extends SubsystemBase {
     // Tolerance (in ticks) to decide if the elevator is “at” the target.
     private static final double TOLERANCE_TICKS = 10.0;
 
-
-    /**
-     * Constructs the ElevatorSubsystem.
-     * @param masterID CAN ID for the master Falcon 500
-     * @param followerID CAN ID for the follower Falcon 500
-     */
     public Arm() {
         armMotor = new TalonFX(Constants.CANids.armMotor);
 
