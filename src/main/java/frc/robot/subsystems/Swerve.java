@@ -72,31 +72,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
     public final Pigeon2 m_gyro = new Pigeon2(0);
-
-    private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-    private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-    private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-    private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
-
-    
-    private final SwerveDriveKinematics m_kinematics =
-      new SwerveDriveKinematics(
-          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
-    private Encoder encoder;
-    private final SwerveDrivePoseEstimator m_poseEstimator =
-      new SwerveDrivePoseEstimator(
-          m_kinematics,
-          m_gyro.getRotation2d(),
-          new SwerveModulePosition[] {
-            new SwerveModulePosition(this.m_frontLeftLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_frontRightLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-          },
-          new Pose2d(),
-          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
     
     private void configurePathPlanner() {
         try{
@@ -313,8 +288,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             });
         }
 
-        updateOdometry();
-
         /*
          * Periodically check for negative translational pose.
          */
@@ -403,67 +376,4 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return AutoBuilder.pathfindToPose(pose, swerveConstraints, 0.0);
         
     }
-
-    public void updateOdometry() {
-        m_poseEstimator.update(
-            m_gyro.getRotation2d(),
-            new SwerveModulePosition[] {
-                new SwerveModulePosition(this.m_frontLeftLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-                new SwerveModulePosition(this.m_frontRightLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-                new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-                new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-            });
-    
-    
-        boolean useMegaTag2 = true; //set to false to use MegaTag1
-        boolean doRejectUpdate = false;
-        if(useMegaTag2 == false)
-        {
-          LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-          
-          if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-          {
-            if(mt1.rawFiducials[0].ambiguity > .7)
-            {
-              doRejectUpdate = true;
-            }
-            if(mt1.rawFiducials[0].distToCamera > 3)
-            {
-              doRejectUpdate = true;
-            }
-          }
-          if(mt1.tagCount == 0)
-          {
-            doRejectUpdate = true;
-          }
-    
-          if(!doRejectUpdate)
-          {
-            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            m_poseEstimator.addVisionMeasurement(
-                mt1.pose,
-                mt1.timestampSeconds);
-          }
-        }
-        else if (useMegaTag2 == true)
-        {
-          LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-          LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-          if(Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-          {
-            doRejectUpdate = true;
-          }
-          if(mt2.tagCount == 0)
-          {
-            doRejectUpdate = true;
-          }
-          if(!doRejectUpdate)
-          {
-            m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-            m_poseEstimator.addVisionMeasurement(
-                mt2.pose,
-                mt2.timestampSeconds);
-          }
-        }
-      }
 }
