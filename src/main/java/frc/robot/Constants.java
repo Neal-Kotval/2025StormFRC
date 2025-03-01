@@ -52,5 +52,9 @@ public final class Constants {
 
   public static class CANids {
     public static final int armMotor = 2;
+    public static final int intakeMotor = 0;
+    public static final int elevatorRightMotor = 0;
+    public static final int elevatorLeftMotor = 0;
+    public static final int gyro = 0;
   }
 }
