@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,6 +36,7 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         armMotor = new TalonFX(Constants.CANids.armMotor);
+        armMotor.setNeutralMode(NeutralModeValue.Brake);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();

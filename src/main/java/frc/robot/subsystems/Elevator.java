@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,6 +40,9 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
         followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
+
+        masterMotor.setNeutralMode(NeutralModeValue.Brake);
+        followerMotor.setNeutralMode(NeutralModeValue.Brake);
 
         followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, true));
         
