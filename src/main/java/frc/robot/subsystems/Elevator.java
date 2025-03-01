@@ -5,6 +5,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
 import com.ctre.phoenix6.controls.Follower; 
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
@@ -35,16 +37,11 @@ public class Elevator extends SubsystemBase {
     private static final double TOLERANCE_TICKS = 10.0;
 
 
-    /**
-     * Constructs the ElevatorSubsystem.
-     * @param masterID CAN ID for the master Falcon 500
-     * @param followerID CAN ID for the follower Falcon 500
-     */
     public Elevator(int masterID, int followerID) {
-        masterMotor = new TalonFX(masterID);
-        followerMotor = new TalonFX(followerID);
+        masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
+        followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
 
-        // Set the follower motor to mirror the master motor.
+        Set the follower motor to mirror the master motor.
         followerMotor.setControl(new Follower(masterID, false));
         
         TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
@@ -103,5 +100,9 @@ public class Elevator extends SubsystemBase {
      */
     public void stopElevator() {
         masterMotor.set(0);
+    }
+
+    public void setElevatorSpeed(double speed) {
+        masterMotor.set(speed);
     }
 }

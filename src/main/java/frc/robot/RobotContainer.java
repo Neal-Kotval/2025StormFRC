@@ -23,9 +23,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Arm.MoveArm;
+import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.SysId.SwerveDriveSysId;
@@ -43,10 +49,31 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick2 = new CommandXboxController(1);
 
     public final Swerve drivetrain = TunerConstants.createDrivetrain();
     private final SendableChooser<Command> autoChooser;
     private final SwerveDriveSysId m_swerveSysId;
+    private final Arm arm = new Arm();
+    private final Elevator elevator = new Elevator();
+
+    //Operator
+    public Trigger operatorY = new Trigger(joystick2.y());
+    public Trigger operatorX = new Trigger(joystick2.x());
+    public Trigger operatorA = new Trigger(joystick2.a());
+    public Trigger operatorB = new Trigger(joystick2.b());
+    public Trigger padUp = new Trigger(joystick2.povUp());
+    public Trigger padDown = new Trigger(joystick2.povDown());
+    public Trigger padLeft = new Trigger(joystick2.povLeft());
+    public Trigger padRight = new Trigger(joystick2.povRight());
+    public Trigger leftYAxisActiveUp = new Trigger(()->(joystick2.getLeftY()>0.1));
+    public Trigger leftYAxisActiveDown = new Trigger(()->(joystick2.getLeftY()<-0.1));
+    public Trigger rightYAxisActiveUp = new Trigger(()->(joystick2.getRightY()>0.1));
+    public Trigger rightYAxisActiveDown = new Trigger(()->(joystick2.getRightY()<-0.1));
+    public Trigger leftBumper = new Trigger(joystick2.leftBumper());
+    public Trigger rightBumper = new Trigger(joystick2.rightBumper());
+    public Trigger rightTrigger = new Trigger(()->(joystick2.getRightTriggerAxis()>0.1));
+    public Trigger leftTrigger = new Trigger(()->(joystick2.getLeftTriggerAxis()>0.1));
 
     public RobotContainer() {
 
@@ -102,6 +129,11 @@ public class RobotContainer {
         // }
         joystick.y().whileTrue(new AlignCommand(drivetrain, m_Vision,0));
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
+        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
+
+        operatorA.whileTrue(new MoveElevator(elevator, 0.05));
     }
 
     public Command getAutonomousCommand() {
