@@ -14,7 +14,7 @@ import com.ctre.phoenix6.controls.Follower;
  * Because Phoenix 6 does not include a built-in gravity compensation parameter (kG),
  * we add an arbitrary feedforward (GRAVITY_FF) to the control request to help hold the elevator.
  */
-public class ElevatorSubsystem extends SubsystemBase {
+public class Elevator extends SubsystemBase {
     private final TalonFX masterMotor;
     private final TalonFX followerMotor;
     // Create a PositionVoltage control request (using slot 0 for PID gains).
@@ -40,7 +40,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param masterID CAN ID for the master Falcon 500
      * @param followerID CAN ID for the follower Falcon 500
      */
-    public ElevatorSubsystem(int masterID, int followerID) {
+    public Elevator(int masterID, int followerID) {
         masterMotor = new TalonFX(masterID);
         followerMotor = new TalonFX(followerID);
 
