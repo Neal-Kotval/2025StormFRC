@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Set the follower motor to mirror the master motor.
         followerMotor.setControl(new Follower(masterID, false));
+        
+        TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
+        followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        followerMotor.getConfigurator().apply(followerConfiguration);
+
+
 
 
         // Configure PID gains on the master using slot 0.

@@ -55,7 +55,6 @@ public class RobotContainer {
 
     public RobotContainer() {
 
-        NamedCommands.registerCommand("MoveArm", new MoveArm(0.1));
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
