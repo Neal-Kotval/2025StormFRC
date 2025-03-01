@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
     // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
     private static final double TICKS_PER_REV = 2048.0;
     // The gear ratio between the motor and the elevator (adjust if you have gearing)
-    private static final double GEAR_RATIO = 1.0;
+    private static final double GEAR_RATIO = 5.8;
     // Tolerance (in ticks) to decide if the elevator is “at” the target.
     private static final double TOLERANCE_TICKS = 10.0;
 
