@@ -5,10 +5,10 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.LimelightHelpers.*;
 import frc.robot.LimelightHelpers;
 
-public class VisionSubsystem extends SubsystemBase {
+public class Vision extends SubsystemBase {
   private RawFiducial[] fiducials;
 
-  public VisionSubsystem() {
+  public Vision() {
     config();
   }
 

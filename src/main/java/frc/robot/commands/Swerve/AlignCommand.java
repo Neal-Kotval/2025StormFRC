@@ -9,7 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.Vision;
 import frc.robot.LimelightHelpers.RawFiducial;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants.PIDvalues;;
@@ -26,7 +26,7 @@ class PIDControllerConfigurable extends PIDController {
 }
 public class AlignCommand extends Command {
   private final Swerve m_drivetrain;
-  private final VisionSubsystem m_Limelight;
+  private final Vision m_Limelight;
   private final int tagID;
 
   private static final PIDControllerConfigurable rotationalPidController = new PIDControllerConfigurable(
@@ -53,7 +53,7 @@ public class AlignCommand extends Command {
   private static final SwerveRequest.RobotCentric alignRequest = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private static final SwerveRequest.Idle idleRequest = new SwerveRequest.Idle();
 
-  public AlignCommand(Swerve drivetrain, VisionSubsystem limelight, int TAGID) {
+  public AlignCommand(Swerve drivetrain, Vision limelight, int TAGID) {
     this.m_drivetrain = drivetrain;
     this.m_Limelight = limelight;
     this.tagID = TAGID;
@@ -79,7 +79,7 @@ public class AlignCommand extends Command {
       m_drivetrain.setControl(
           alignRequest.withRotationalRate(-rotationalRate).withVelocityX(-velocityX));
  
-    } catch (VisionSubsystem.NoSuchTargetException nste) {
+    } catch (Vision.NoSuchTargetException nste) {
     }
   }
 
