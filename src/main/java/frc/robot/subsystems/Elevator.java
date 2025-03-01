@@ -5,7 +5,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.Follower; 
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
  * The master motor runs a closed-loop PID based on its integrated relative encoder,
