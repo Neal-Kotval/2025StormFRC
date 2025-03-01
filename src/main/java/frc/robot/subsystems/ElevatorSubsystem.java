@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -51,9 +50,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
         followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         followerMotor.getConfigurator().apply(followerConfiguration);
-
-
-
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
