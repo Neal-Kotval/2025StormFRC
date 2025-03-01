@@ -1,16 +1,16 @@
-package frc.robot.commands.Elevator;
+package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 
 
-public class MoveElevator extends Command {
-  private final Elevator elevator;
+public class MoveIntake extends Command {
+  private final Intake intake;
   private final double power;
 
-  public MoveElevator(Elevator elevator, double power) {
-    this.elevator = elevator;
+  public MoveIntake(Intake intake, double power) {
+    this.intake = intake;
     this.power = power;
-    addRequirements(elevator);
+    addRequirements(intake);
   }
 
 
@@ -21,7 +21,7 @@ public class MoveElevator extends Command {
 
   @Override
   public void execute() {
-    elevator.setElevatorSpeed(power);
+    intake.setIntakeSpeed(power);
   }
 
   @Override
@@ -31,6 +31,6 @@ public class MoveElevator extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    elevator.setElevatorSpeed(0);
+    intake.setIntakeSpeed(0);
   }
 }

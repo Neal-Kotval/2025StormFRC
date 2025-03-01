@@ -37,16 +37,15 @@ public class Elevator extends SubsystemBase {
     private static final double TOLERANCE_TICKS = 10.0;
 
 
-    public Elevator(int masterID, int followerID) {
+    public Elevator() {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
         followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
 
-        Set the follower motor to mirror the master motor.
-        followerMotor.setControl(new Follower(masterID, false));
+        followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, true));
         
-        TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
-        followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        followerMotor.getConfigurator().apply(followerConfiguration);
+        // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
+        // followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        // followerMotor.getConfigurator().apply(followerConfiguration);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();

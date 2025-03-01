@@ -28,12 +28,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Arm.MoveArm;
 import frc.robot.commands.Elevator.MoveElevator;
+import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.SysId.SwerveDriveSysId;
 
 public class RobotContainer {
@@ -56,6 +54,7 @@ public class RobotContainer {
     private final SwerveDriveSysId m_swerveSysId;
     private final Arm arm = new Arm();
     private final Elevator elevator = new Elevator();
+    private final Intake intake = new Intake();
 
     //Operator
     public Trigger operatorY = new Trigger(joystick2.y());
@@ -134,6 +133,7 @@ public class RobotContainer {
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
 
         operatorA.whileTrue(new MoveElevator(elevator, 0.05));
+        operatorB.whileTrue(new MoveIntake(intake, 0.05));
     }
 
     public Command getAutonomousCommand() {
