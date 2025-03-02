@@ -60,5 +60,6 @@ public final class Constants {
 
   public static class TickValues {
     public static final int armSafetyTicks = 0;
+    public static final int L3Ticks = 0;
   }
 }
