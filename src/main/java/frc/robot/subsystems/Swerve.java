@@ -282,12 +282,12 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         /*
          * Periodically check for negative translational pose.
          */
-        if (this.getState().Pose.getX() < 0) {
-            resetPose(new Pose2d(new Translation2d(0,this.getState().Pose.getY()), this.getState().Pose.getRotation()));
-        }
-        if (this.getState().Pose.getY() < 0) {
-            resetPose(new Pose2d(new Translation2d(this.getState().Pose.getX(), 0), this.getState().Pose.getRotation()));
-        }
+        // if (this.getState().Pose.getX() < 0) {
+        //     resetPose(new Pose2d(new Translation2d(0,this.getState().Pose.getY()), this.getState().Pose.getRotation()));
+        // }
+        // if (this.getState().Pose.getY() < 0) {
+        //     resetPose(new Pose2d(new Translation2d(this.getState().Pose.getX(), 0), this.getState().Pose.getRotation()));
+        // }
 
         SmartDashboard.putNumber("PoseX", this.getState().Pose.getX());
         SmartDashboard.putNumber("PoseY", this.getState().Pose.getY());
