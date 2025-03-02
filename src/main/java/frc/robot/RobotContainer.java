@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -72,6 +73,9 @@ public class RobotContainer {
     public Trigger rightBumper = new Trigger(joystick2.rightBumper());
     public Trigger rightTrigger = new Trigger(()->(joystick2.getRightTriggerAxis()>0.1));
     public Trigger leftTrigger = new Trigger(()->(joystick2.getLeftTriggerAxis()>0.1));
+
+    public double originalDegrees = 0;
+    public boolean inRobotCentric = false;
 
     public RobotContainer() {
 
@@ -125,6 +129,17 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
+
+
+        joystick.rightBumper()
+        .onTrue(new InstantCommand(() -> {
+            double storedForwardDegrees = drivetrain.getState().Pose.getRotation().getDegrees();
+            drivetrain.setOperatorPerspectiveForward(new Rotation2d(storedForwardDegrees));
+        }));
+        joystick.rightBumper().onFalse(new InstantCommand(() -> {
+            drivetrain.setOperatorPerspectiveForward(new Rotation2d(originalDegrees));
+        }));
+
         joystick.y().whileTrue(new AlignCommand(drivetrain, m_Vision,0));
         drivetrain.registerTelemetry(logger::telemeterize);
 

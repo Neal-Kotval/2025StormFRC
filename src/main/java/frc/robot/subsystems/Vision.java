@@ -28,7 +28,6 @@ public class Vision extends SubsystemBase {
         0,
         0,
         0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {6,7,8,9,10,11,17,18,19,20,21,22});
   }
 
   @Override
