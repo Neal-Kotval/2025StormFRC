@@ -125,7 +125,7 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        joystick.y().whileTrue(new AlignCommand(drivetrain, m_Vision,0));
+        joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
         drivetrain.registerTelemetry(logger::telemeterize);
 
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
