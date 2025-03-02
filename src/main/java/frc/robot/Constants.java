@@ -57,4 +57,8 @@ public final class Constants {
     public static final int elevatorLeftMotor = 0;
     public static final int gyro = 0;
   }
+
+  public static class TickValues {
+    public static final int armSafetyTicks = 0;
+  }
 }
