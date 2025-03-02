@@ -13,7 +13,6 @@ public class MoveArm extends Command {
     addRequirements(arm);
   }
 
-
   @Override
   public void initialize() {
     

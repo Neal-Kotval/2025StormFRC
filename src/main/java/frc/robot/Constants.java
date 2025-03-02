@@ -34,20 +34,20 @@ public final class Constants {
   }
 
   public static class PIDvalues {
-    public static final double rotationalKP = 0.07;
+    public static final double rotationalKP = 100;
     public static final double rotationalKI = 0;
-    public static final double rotationalKD = 0;
+    public static final double rotationalKD = 0.5;
     public static final double rotationalTolerance = 0.005;
 
-    public static final double XtranslationalKP = 0.28;
-    public static final double XtranslationalKI = 0.01;
-    public static final double XtranslationalKD = 0.01;
+    public static final double XtranslationalKP = 0.1;
+    public static final double XtranslationalKI = 0;
+    public static final double XtranslationalKD = 0;
     public static final double XtranslationalTolerance = 0.01;
 
-    public static final double YtranslationalKP = 0.3;
+    public static final double YtranslationalKP = 0.1;
     public static final double YtranslationalKI = 0;
     public static final double YtranslationalKD = 0;
-    public static final double YtranslationalTolerance = 0.3;
+    public static final double YtranslationalTolerance = 0.01;
   }
 
   public static class CANids {
