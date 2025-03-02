@@ -34,7 +34,7 @@ public final class Constants {
   }
 
   public static class PIDvalues {
-    public static final double rotationalKP = 100;
+    public static final double rotationalKP = 0.5;
     public static final double rotationalKI = 0;
     public static final double rotationalKD = 0.5;
     public static final double rotationalTolerance = 0.005;
@@ -56,5 +56,9 @@ public final class Constants {
     public static final int elevatorRightMotor = 0;
     public static final int elevatorLeftMotor = 0;
     public static final int gyro = 0;
+  }
+
+  public static class TickValues {
+    public static final int armSafetyTicks = 0;
   }
 }

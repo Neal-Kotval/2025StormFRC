@@ -22,13 +22,13 @@ public class Vision extends SubsystemBase {
   public void config() {
     LimelightHelpers.setCameraPose_RobotSpace(
         "limelight",
-        0.3556, 
-        0.1016,
-        0.3429,
+        0, 
         0,
-        -2,
+        1,
+        0,
+        0,
         0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {0,1,5,8,9,10,11,12});
+    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {6,7,8,9,10,11,17,18,19,20,21,22});
   }
 
   @Override

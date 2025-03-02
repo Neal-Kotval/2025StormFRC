@@ -131,7 +131,7 @@ public class RobotContainer {
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
 
-        operatorA.whileTrue(new MoveElevator(elevator, 0.05));
+        operatorA.whileTrue(new MoveElevator(elevator, arm, 0.05));
         operatorB.whileTrue(new MoveIntake(intake, 0.05));
     }
 
