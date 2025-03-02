@@ -34,7 +34,7 @@ public final class Constants {
   }
 
   public static class PIDvalues {
-    public static final double rotationalKP = 100;
+    public static final double rotationalKP = 0.5;
     public static final double rotationalKI = 0;
     public static final double rotationalKD = 0.5;
     public static final double rotationalTolerance = 0.005;
