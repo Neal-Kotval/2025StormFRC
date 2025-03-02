@@ -9,8 +9,9 @@ public class MoveElevator extends Command {
   private final double power;
   private final Arm arm;
 
-  public MoveElevator(Elevator elevator, double power) {
+  public MoveElevator(Elevator elevator, Arm arm, double power) {
     this.elevator = elevator;
+    this.arm = arm;
     this.power = power;
     addRequirements(elevator);
   }
@@ -24,7 +25,7 @@ public class MoveElevator extends Command {
   @Override
   public void execute() {
     if (arm.getTicks() < Constants.TickValues.armSafetyTicks) {
-      arm.setArmPositionTicks();
+      arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
     }
     elevator.setElevatorSpeed(power);
   }
