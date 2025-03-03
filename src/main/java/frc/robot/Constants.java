@@ -20,6 +20,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 // import edu.wpi.first.units.measure.*; 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -101,4 +103,18 @@ public final class Constants {
             public static double LL_MAX_TAG_CLEAR_DIST = 4.0;
         }
     }
+
+    public static final class AutoConstants {
+          public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(
+            12,
+            12,
+            Math.toRadians(540),
+            Math.toRadians(720),
+            12.0,
+            false
+        );
+
+        public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
+    }
+
 }
