@@ -78,7 +78,11 @@ public final class Constants {
   }
 
   public static class TickValues {
-    public static final int armSafetyTicks = 0;
+    public static final double armSafetyTicks = 3.77;
+    public static final double L4tickheight = 0;
+    public static final double L3tickheight = 0;
+    public static final double L2tickheight = 0;
+    public static final double L1tickheight = 0;
   }
 
    public static final class VisionConstantsTest {

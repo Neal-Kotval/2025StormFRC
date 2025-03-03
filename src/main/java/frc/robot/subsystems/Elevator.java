@@ -59,6 +59,12 @@ public class Elevator extends SubsystemBase {
         followerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
+    public void periodic() {
+        if (this.getTicks() < 0) { 
+            this.setElevatorPositionTicks(0);
+        }
+    }
+
     /**
      * Reads the current elevator position in rotations.
      * @return The elevator position (in rotations).
