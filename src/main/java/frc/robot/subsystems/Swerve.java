@@ -395,8 +395,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         PathConstraints swerveConstraints = new PathConstraints(
             12,
             12,
-            540.0,
-            720.0,
+            Math.toRadians(540),
+            Math.toRadians(720),
             12.0,
             false
         );
