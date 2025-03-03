@@ -26,7 +26,7 @@ public class Elevator extends SubsystemBase {
     private static final double kP = 2.0;
     private static final double kI = 0.0;
     private static final double kD = 0.1;
-    private static final double kG = 0.05;
+    private static final double kG = 0;
 
     // Conversion constants:
     // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
