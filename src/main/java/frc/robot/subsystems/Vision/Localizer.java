@@ -148,20 +148,6 @@ public class Localizer {
         }
     }
 
-    // public void toggleLocalizationStrategy() {
-    //     strategy = strategy == LocalizationStrategy.QUEST_NAV ? LocalizationStrategy.POSE_ESTIMATOR : LocalizationStrategy.QUEST_NAV;
-    // }
-
-    // public void configureQuestOffset() {
-    //     QuestNavUtil.setQuestPose(poseEstimator.getEstimatedPosition());
-    // }
-
-    // public void setPoses(Pose2d pose) {
-    //     poseEstimator.resetPose(pose);
-    //     swerve.resetPose(pose);
-    //     QuestNavUtil.setQuestPose(pose);
-    // }
-
     public void setRotations(Rotation2d heading) {
         swerve.resetRotation(heading);
         poseEstimator.resetRotation(heading);

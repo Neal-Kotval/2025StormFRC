@@ -41,9 +41,6 @@ public class Elevator extends SubsystemBase {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
         followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
 
-        masterMotor.setNeutralMode(NeutralModeValue.Brake);
-        followerMotor.setNeutralMode(NeutralModeValue.Brake);
-
         followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, true));
         
         // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
@@ -57,6 +54,9 @@ public class Elevator extends SubsystemBase {
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
         masterMotor.getConfigurator().apply(config);
+
+        masterMotor.setNeutralMode(NeutralModeValue.Brake);
+        followerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**

@@ -36,7 +36,6 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         armMotor = new TalonFX(Constants.CANids.armMotor);
-        armMotor.setNeutralMode(NeutralModeValue.Brake);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -45,6 +44,8 @@ public class Arm extends SubsystemBase {
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
         armMotor.getConfigurator().apply(config);
+
+        armMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**

@@ -78,6 +78,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
     private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
 
+    public final Localizer localizer = new Localizer(this);
     
     private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
