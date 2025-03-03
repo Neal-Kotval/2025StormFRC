@@ -113,6 +113,7 @@ public final class Constants {
             12.0,
             false
         );
+        public static final double TRANSLATION_TOLERANCE_TO_ACCEPT = 0.03;
 
         public static final double DISTANCE_TOLERANCE_TO_DRIVE_INTO = 1.0;
     }

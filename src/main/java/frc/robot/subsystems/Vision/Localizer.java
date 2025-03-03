@@ -12,8 +12,7 @@ import frc.robot.subsystems.Swerve;
 import frc.lib.util.*;
 import frc.lib.util.Vision.LimelightUtil;
 
-
-import java.util.Optional;
+// import java.util.Optional;
 
 public class Localizer {
     private enum LocalizationStrategy {
@@ -163,7 +162,7 @@ public class Localizer {
             poseEstimator.addVisionMeasurement(
                     megaTagPose,
                     Timer.getFPGATimestamp() - LimelightUtil.getLatency(),
-                    Constants.VisionConstants.VISION_STD_DEV_MULTITAG_FUNCTION.apply(LimelightUtil.getNearestTagDist())
+                    Constants.VisionConstantsTest.VISION_STD_DEV_MULTITAG_FUNCTION.apply(LimelightUtil.getNearestTagDist())
             );
         }
     }
