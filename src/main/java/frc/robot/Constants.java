@@ -4,10 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.signals.UpdateModeValue;
+
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 
 // import edu.wpi.first.units.measure.*; 
 /**
@@ -64,5 +69,11 @@ public final class Constants {
     public static final double L1ElevatorTicks = 7.98;
     public static final double L2ElevatorTicks = 18.40;
     public static final double L3ElevatorTicks = 40.6;
+  }
+
+  public static CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
+  static {
+    coralSensorConfig.ToFParams.UpdateMode = UpdateModeValue.ShortRange100Hz;
+    coralSensorConfig.ProximityParams.ProximityThreshold = 0.1;
   }
 }
