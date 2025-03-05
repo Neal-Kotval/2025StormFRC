@@ -395,6 +395,19 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         
     }
 
+    public Command createDriveToPose(double x, double y, double theta) {
+        PathConstraints swerveConstraints = new PathConstraints(
+            12,
+            12,
+            540.0,
+            720.0,
+            12.0,
+            false
+        );
+        return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0);
+        
+    }
+
     public void updateMegaTagOdometry() {
         LimelightHelpers.setPipelineIndex("limelight", 0);
 
@@ -419,7 +432,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         System.out.println("Updating, " + mt2.tagCount);
         if (!doRejectUpdate) {
             // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
-            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2, 2, 9999999));
+            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
 
             m_odometry.addVisionMeasurement(
                     mt2.pose,
@@ -431,5 +444,32 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     public Pose2d getEstimatedPose() {
         return m_odometry.getEstimatedPosition();
+    }
+
+    public void setTranslationToVision() {
+        LimelightHelpers.setPipelineIndex("limelight", 0);
+
+        int[] validIDs = {8};
+        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
+
+        boolean doRejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
+                0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                            // vision updates
+        {
+            doRejectUpdate = true;
+        }
+        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
+
+        if (mt2.tagCount <= 0) {
+            doRejectUpdate = true;
+        }
+        
+        System.out.println("Updating, " + mt2.tagCount);
+        if (!doRejectUpdate) {
+            this.resetPose(mt2.pose);
+        }
     }
 }

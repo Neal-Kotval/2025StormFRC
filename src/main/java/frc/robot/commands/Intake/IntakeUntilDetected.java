@@ -1,7 +1,8 @@
 package frc.robot.commands.Intake;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class IntakeUntilDetected {
+public class IntakeUntilDetected extends Command{
 
     private final Intake intake; 
     private final double power;
