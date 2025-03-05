@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorPositionTicks(double ticks) {
         masterMotor.setControl(positionControl.withPosition(ticks)
-                                               .withFeedForward(kG));
+                                               .withFeedForward(kG).withVelocity(0.1));
     }
 
     /**

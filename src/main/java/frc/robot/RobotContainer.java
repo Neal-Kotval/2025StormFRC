@@ -138,8 +138,12 @@ public class RobotContainer {
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
         padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
-        rightBumper.whileTrue(new MoveIntake(intake, 0.05));
-        leftBumper.whileTrue(new MoveIntake(intake, -0.5));
+
+        // Outtake + Intake
+        leftBumper.whileTrue(new MoveIntake(intake, 0.05));
+        rightBumper.whileTrue(new MoveIntake(intake, -0.5));
+
+        // Set Positions (Elevator)
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
         operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         operatorY.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
