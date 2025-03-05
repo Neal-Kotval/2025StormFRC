@@ -60,6 +60,7 @@ public final class Constants {
 
   public static class TickValues {
     public static final double armSafetyTicks = 3.77;
+    public static final double elevatorSafetyTicks = 0.66;
     public static final double L1ElevatorTicks = 7.98;
     public static final double L2ElevatorTicks = 18.40;
     public static final double L3ElevatorTicks = 40.6;
