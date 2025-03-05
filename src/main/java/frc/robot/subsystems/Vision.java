@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.LimelightHelpers.*;
@@ -22,13 +23,13 @@ public class Vision extends SubsystemBase {
   public void config() {
     LimelightHelpers.setCameraPose_RobotSpace(
         "limelight",
-        0.3556, 
-        0.1016,
-        0.3429,
+        0, 
         0,
-        -2,
+        1,
+        0,
+        0,
         0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {0,1,5,8,9,10,11,12});
+    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {6,7,8,9,10,11,17,18,19,20,21,22});
   }
 
   @Override
@@ -92,7 +93,21 @@ public RawFiducial getFiducialWithId(int id, boolean verbose) {
   public boolean getTV(){
     return LimelightHelpers.getTV(VisionConstants.LIMELIGHT_NAME);
   }
+    public double getTargetAngle() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0.0);
+    }
 
+    public double getTargetTY() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0.0);
+    }
+
+    public double getTargetTX() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0.0);
+    }
+
+    public double[] get3DPose() {
+        return NetworkTableInstance.getDefault().getTable("limelight").getEntry("camtran").getDoubleArray(new double[6]);
+    }
   public double getClosestTX(){
     return getClosestFiducial().txnc;
   }

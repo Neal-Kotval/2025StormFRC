@@ -31,12 +31,11 @@ public class Arm extends SubsystemBase {
     private static final double TICKS_PER_REV = 2048.0;
     // The gear ratio between the motor and the elevator (adjust if you have gearing)
     private static final double GEAR_RATIO = 5.8;
-    // Tolerance (in ticks) to decide if the elevator is “at” the target.
+    // Tolerance (in ticks) to decide if the elevator is at the target.
     private static final double TOLERANCE_TICKS = 10.0;
 
     public Arm() {
         armMotor = new TalonFX(Constants.CANids.armMotor);
-        armMotor.setNeutralMode(NeutralModeValue.Brake);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -45,6 +44,7 @@ public class Arm extends SubsystemBase {
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
         armMotor.getConfigurator().apply(config);
+        armMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**
@@ -55,6 +55,10 @@ public class Arm extends SubsystemBase {
         // Get the sensor position (in ticks) and convert to rotations.
         double ticks = armMotor.getPosition().getValueAsDouble();
         return (ticks / TICKS_PER_REV) * GEAR_RATIO;
+    }
+
+    public double getTicks() {
+        return armMotor.getPosition().getValueAsDouble();
     }
 
     /**
@@ -68,6 +72,10 @@ public class Arm extends SubsystemBase {
         // Send the closed-loop control request with the target and add our manually tuned gravity feedforward.
         armMotor.setControl(positionControl.withPosition(targetTicks)
                                                .withFeedForward(kG));
+    }
+
+    public void setArmPositionTicks(double ticks) {
+        armMotor.setControl(positionControl.withPosition(ticks));
     }
 
     /**

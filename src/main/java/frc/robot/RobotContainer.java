@@ -21,14 +21,17 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.Arm.MoveArm;
+import frc.robot.commands.Arm.*;
+import frc.robot.commands.Elevator.ElevatorSetPosition;
 import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Swerve.AlignCommand;
+import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SysId.SwerveDriveSysId;
@@ -125,14 +128,23 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        joystick.y().whileTrue(new AlignCommand(drivetrain, m_Vision,0));
+        // joystick.y().onTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        joystick.y().whileTrue(new TimedSwerve(drivetrain, 1, 0, 0.1));
+        // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
         drivetrain.registerTelemetry(logger::telemeterize);
 
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
-        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
+        leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.05));
 
-        operatorA.whileTrue(new MoveElevator(elevator, 0.05));
-        operatorB.whileTrue(new MoveIntake(intake, 0.05));
+        padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
+        padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
+        rightBumper.whileTrue(new MoveIntake(intake, 0.05));
+        leftBumper.whileTrue(new MoveIntake(intake, -0.5));
+        operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
+        operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
+        operatorY.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
+        operatorX.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, 0), new setArmPositionNeutral(arm, elevator)));
+
     }
 
     public Command getAutonomousCommand() {

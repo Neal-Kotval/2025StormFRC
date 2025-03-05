@@ -34,7 +34,7 @@ public final class Constants {
   }
 
   public static class PIDvalues {
-    public static final double rotationalKP = 100;
+    public static final double rotationalKP = 0.5;
     public static final double rotationalKI = 0;
     public static final double rotationalKD = 0.5;
     public static final double rotationalTolerance = 0.005;
@@ -52,9 +52,16 @@ public final class Constants {
 
   public static class CANids {
     public static final int armMotor = 2;
-    public static final int intakeMotor = 0;
-    public static final int elevatorRightMotor = 0;
-    public static final int elevatorLeftMotor = 0;
+    public static final int intakeMotor = 6;
+    public static final int elevatorRightMotor = 4;
+    public static final int elevatorLeftMotor = 5;
     public static final int gyro = 0;
+  }
+
+  public static class TickValues {
+    public static final double armSafetyTicks = 3.77;
+    public static final double L1ElevatorTicks = 7.98;
+    public static final double L2ElevatorTicks = 18.40;
+    public static final double L3ElevatorTicks = 40.6;
   }
 }

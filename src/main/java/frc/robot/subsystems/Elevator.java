@@ -23,17 +23,17 @@ public class Elevator extends SubsystemBase {
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
     // PID gains for closed-loop position control (tune these values for your mechanism)
-    private static final double kP = 2.0;
+    private static final double kP = 1;
     private static final double kI = 0.0;
     private static final double kD = 0.1;
-    private static final double kG = 0.05;
+    private static final double kG = 0;
 
     // Conversion constants:
     // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
     private static final double TICKS_PER_REV = 2048.0;
     // The gear ratio between the motor and the elevator (adjust if you have gearing)
     private static final double GEAR_RATIO = 1.0;
-    // Tolerance (in ticks) to decide if the elevator is “at” the target.
+    // Tol     erance (in ticks) to decide if the elevator is at the target.
     private static final double TOLERANCE_TICKS = 10.0;
 
 
@@ -41,10 +41,9 @@ public class Elevator extends SubsystemBase {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
         followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
 
-        masterMotor.setNeutralMode(NeutralModeValue.Brake);
-        followerMotor.setNeutralMode(NeutralModeValue.Brake);
 
-        followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, true));
+
+        followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, false));
         
         // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
         // followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -57,6 +56,8 @@ public class Elevator extends SubsystemBase {
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
         masterMotor.getConfigurator().apply(config);
+        masterMotor.setNeutralMode(NeutralModeValue.Brake);
+        followerMotor.setNeutralMode(NeutralModeValue.Brake);
     }
 
     /**
