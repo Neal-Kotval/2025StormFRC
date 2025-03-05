@@ -33,8 +33,6 @@ public class Elevator extends SubsystemBase {
     private static final double TICKS_PER_REV = 2048.0;
     // The gear ratio between the motor and the elevator (adjust if you have gearing)
     private static final double GEAR_RATIO = 1.0;
-    // Tol     erance (in ticks) to decide if the elevator is at the target.
-    private static final double TOLERANCE_TICKS = 10.0;
 
 
     public Elevator() {
