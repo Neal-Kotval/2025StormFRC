@@ -23,7 +23,7 @@ public class Elevator extends SubsystemBase {
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
     // PID gains for closed-loop position control (tune these values for your mechanism)
-    private static final double kP = 1;
+    private static final double kP = 2;
     private static final double kI = 0.0;
     private static final double kD = 0.1;
     private static final double kG = 0;

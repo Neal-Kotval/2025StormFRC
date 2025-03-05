@@ -143,7 +143,7 @@ public class RobotContainer {
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
         operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         operatorY.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
-        operatorX.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, 0), new setArmPositionNeutral(arm, elevator)));
+        operatorX.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, 0).withTimeout(2), new setArmPositionNeutral(arm, elevator)));
 
     }
 
