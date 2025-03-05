@@ -66,6 +66,10 @@ public class Robot extends TimedRobot {
     tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
     ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+    SmartDashboard.putNumber("Estimated Pose X", drivetrain.getEstimatedPose().getX());
+    SmartDashboard.putNumber("Estimated Pose Y", drivetrain.getEstimatedPose().getY());
+    SmartDashboard.putNumber("Estimated Pose Theta", drivetrain.getEstimatedPose().getRotation().getDegrees());
+
 
     SmartDashboard.putNumber("LX", tx);
     SmartDashboard.putNumber("LY", ty);

@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -73,15 +74,20 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
     public final Pigeon2 m_gyro = new Pigeon2(0);
 
-    private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-    private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-    private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-    private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+    // Locations for the swerve drive modules relative to the robot center.
+    Translation2d m_frontLeftLocation = new Translation2d(Units.inchesToMeters(15), Units.inchesToMeters(14));
+    Translation2d m_frontRightLocation = new Translation2d(Units.inchesToMeters(15), -Units.inchesToMeters(14));
+    Translation2d m_backLeftLocation = new Translation2d(-Units.inchesToMeters(15), Units.inchesToMeters(14));
+    Translation2d m_backRightLocation = new Translation2d(-Units.inchesToMeters(15), -Units.inchesToMeters(14));
+    // Creating my kinematics object using the module locations
+    SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+        m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
+    );
 
-    
-    private final SwerveDriveKinematics m_kinematics =
-      new SwerveDriveKinematics(
-          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+    SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+    m_kinematics, m_gyro.getRotation2d(),
+    this.getState().ModulePositions, new Pose2d(5.0, 13.5, new Rotation2d()));
+
     private Encoder encoder;
     private final SwerveDrivePoseEstimator m_poseEstimator =
       new SwerveDrivePoseEstimator(
@@ -295,6 +301,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
+
+        updateMegaTagOdometry();
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -404,33 +412,31 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         
     }
 
-    public void updateOdometry() {
+    public void updateMegaTagOdometry() {
         boolean doRejectUpdate = false;
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-      
-      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-      {
-        if(mt1.rawFiducials[0].ambiguity > .7)
+        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
+                0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                            // vision updates
         {
-          doRejectUpdate = true;
+            doRejectUpdate = true;
         }
-        if(mt1.rawFiducials[0].distToCamera > 3)
-        {
-          doRejectUpdate = true;
+
+        if (mt2.tagCount <= 0) {
+            doRejectUpdate = true;
         }
-      }
-      if(mt1.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
+        if (!doRejectUpdate) {
+            // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
+            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2, 2, 9999999));
 
-      if(!doRejectUpdate)
-      {
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-        m_poseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
-      }
+            m_odometry.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds);
+        }
+    }
 
+    public Pose2d getEstimatedPose() {
+        return m_odometry.getEstimatedPosition();
     }
 }
