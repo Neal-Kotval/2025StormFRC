@@ -86,24 +86,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
     m_kinematics, m_gyro.getRotation2d(),
-    this.getState().ModulePositions, new Pose2d(5.0, 13.5, new Rotation2d()));
-
-    private Encoder encoder;
-    private final SwerveDrivePoseEstimator m_poseEstimator =
-      new SwerveDrivePoseEstimator(
-          m_kinematics,
-          m_gyro.getRotation2d(),
-          new SwerveModulePosition[] {
-            new SwerveModulePosition(this.m_frontLeftLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_frontRightLocation.getDistance(zeroPose), this.m_frontLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-            new SwerveModulePosition(this.m_backLeftLocation.getDistance(zeroPose), this.m_backLeftLocation.getAngle()),
-          },
-          new Pose2d(),
-          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
-    
+    this.getState().ModulePositions, new Pose2d(0, 0, new Rotation2d()));
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
@@ -413,6 +396,11 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public void updateMegaTagOdometry() {
+        LimelightHelpers.setPipelineIndex("limelight", 0);
+
+        int[] validIDs = {8};
+        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
+
         boolean doRejectUpdate = false;
         LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
                 0, 0, 0, 0);
@@ -422,10 +410,13 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         {
             doRejectUpdate = true;
         }
+        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
 
         if (mt2.tagCount <= 0) {
             doRejectUpdate = true;
         }
+        
+        System.out.println("Updating, " + mt2.tagCount);
         if (!doRejectUpdate) {
             // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
             m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2, 2, 9999999));
@@ -433,6 +424,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             m_odometry.addVisionMeasurement(
                     mt2.pose,
                     mt2.timestampSeconds);
+
+            System.out.println("m_odometry, " + mt2.pose.getX() + ", " + mt2.pose.getY());
         }
     }
 

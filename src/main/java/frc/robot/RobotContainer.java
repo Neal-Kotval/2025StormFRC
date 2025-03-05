@@ -30,7 +30,7 @@ import frc.robot.commands.Arm.*;
 import frc.robot.commands.Elevator.ElevatorSetPosition;
 import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Intake.MoveIntake;
-import frc.robot.commands.Swerve.AlignCommand;
+// import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -39,7 +39,7 @@ import frc.robot.subsystems.SysId.SwerveDriveSysId;
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-    private Vision m_Vision = new Vision();
+    // private Vision m_Vision = new Vision();
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
