@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorPositionTicks(double ticks) {
         masterMotor.setControl(positionControl.withPosition(ticks)
-                                               .withFeedForward(kG));
+                                               .withFeedForward(kG).withVelocity(0.1));
     }
 
     /**
@@ -97,11 +97,6 @@ public class Elevator extends SubsystemBase {
      * @param targetRotations The desired target position (in rotations).
      * @return true if the current position is within tolerance; false otherwise.
      */
-    public boolean atTargetPosition(double targetRotations) {
-        double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
-        double currentTicks = masterMotor.getPosition().getValueAsDouble();
-        return Math.abs(currentTicks - targetTicks) < TOLERANCE_TICKS;
-    }
 
     public void setEncoder(double pos) {
         masterMotor.setPosition(pos);
