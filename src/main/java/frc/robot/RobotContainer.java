@@ -33,6 +33,7 @@ import frc.robot.commands.Elevator.ElevatorSetPosition;
 import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Intake.IntakeUntilDetected;
 import frc.robot.commands.Intake.MoveIntake;
+import frc.robot.commands.Intake.TimedIntake;
 import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
@@ -84,9 +85,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
         NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
         NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
-        NamedCommands.registerCommand("hewwo", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
+        NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
         NamedCommands.registerCommand("intakeUntil", new IntakeUntilDetected(intake, -0.2));
-        NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(1,1,0));
+        NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
+        NamedCommands.registerCommand("TimedIntake", new TimedIntake(intake,2,-0.5));
 
 
 
