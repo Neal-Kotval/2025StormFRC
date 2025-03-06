@@ -28,7 +28,7 @@ public class setArmPositionNeutral extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getTicks())<0.5;
+    return Math.abs(arm.getTicks())<0.5;
   }
 
   @Override
