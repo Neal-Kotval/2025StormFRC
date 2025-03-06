@@ -4,6 +4,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -61,16 +63,6 @@ public class Elevator extends SubsystemBase {
 
     }
 
-    /**
-     * Reads the current elevator position in rotations.
-     * @return The elevator position (in rotations).
-     */
-    public double getElevatorPosition() {
-        // Get the sensor position (in ticks) and convert to rotations.
-        double ticks = masterMotor.getPosition().getValueAsDouble();
-        return (ticks / TICKS_PER_REV) * GEAR_RATIO;
-    }
-
     public double getTicks() {
         return masterMotor.getPosition().getValueAsDouble();
     }
@@ -89,8 +81,28 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setElevatorPositionTicks(double ticks) {
-        masterMotor.setControl(positionControl.withPosition(ticks)
-                                               .withFeedForward(kG).withVelocity(0.1));
+
+        // Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
+        final TrapezoidProfile m_profile = new TrapezoidProfile(
+            new TrapezoidProfile.Constraints(0.1, 0.1)
+
+        );
+
+        // Final target of 200 rot, 0 rps
+        TrapezoidProfile.State m_goal = new TrapezoidProfile.State(ticks, 0);
+        TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
+
+        // create a position closed-loop request, voltage output, slot 0 configs
+        final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+
+        // calculate the next profile setpoint
+        m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
+
+        // send the request to the device
+        m_request.Position = m_setpoint.position;
+        m_request.Velocity = m_setpoint.velocity;
+
+        masterMotor.setControl(m_request);
     }
 
     /**
