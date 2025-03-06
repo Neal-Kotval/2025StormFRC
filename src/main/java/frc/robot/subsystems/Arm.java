@@ -45,6 +45,7 @@ public class Arm extends SubsystemBase {
         config.Slot0.kG = kG;
         armMotor.getConfigurator().apply(config);
         armMotor.setNeutralMode(NeutralModeValue.Brake);
+        armMotor.setPosition(0);
     }
 
     /**

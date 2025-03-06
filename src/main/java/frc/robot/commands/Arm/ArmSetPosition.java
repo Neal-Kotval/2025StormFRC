@@ -24,20 +24,19 @@ public class ArmSetPosition extends Command {
 
   @Override
   public void execute() {
-    if (elevator.getTicks() < Constants.TickValues.elevatorSafetyTicks) {
-      arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
-    }
-    elevator.setElevatorPositionTicks(targetTicks);
+    // if (elevator.getTicks() < Constants.TickValues.elevatorSafetyTicks) {
+    //   arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
+    // }
+    arm.setArmPosition(targetTicks);
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getTicks()-targetTicks)<0.2;
+    return Math.abs(elevator.getTicks()-targetTicks)<0.5;
   }
 
   @Override
   public void end(boolean interrupted) {
-    double currentTicks = elevator.getTicks();
-    elevator.setElevatorPositionTicks(currentTicks);
+    arm.setArmSpeed(0);
   }
 }

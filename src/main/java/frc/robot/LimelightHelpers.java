@@ -531,6 +531,7 @@ public class LimelightHelpers {
      * Represents a 3D Pose Estimate.
      */
     public static class PoseEstimate {
+        public static final String Timer = null;
         public Pose2d pose;
         public double timestampSeconds;
         public double latency;

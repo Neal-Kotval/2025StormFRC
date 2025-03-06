@@ -56,6 +56,9 @@ public class Elevator extends SubsystemBase {
         masterMotor.getConfigurator().apply(config);
         masterMotor.setNeutralMode(NeutralModeValue.Brake);
         followerMotor.setNeutralMode(NeutralModeValue.Brake);
+        masterMotor.setPosition(0);
+        followerMotor.setPosition(0);
+
     }
 
     /**

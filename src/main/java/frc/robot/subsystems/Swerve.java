@@ -47,6 +47,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -411,7 +412,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     public void updateMegaTagOdometry() {
         LimelightHelpers.setPipelineIndex("limelight", 0);
 
-        int[] validIDs = {8};
+        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
         LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
 
         boolean doRejectUpdate = false;
@@ -436,7 +437,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
             m_odometry.addVisionMeasurement(
                     mt2.pose,
-                    mt2.timestampSeconds);
+                    Timer.getFPGATimestamp());
 
             System.out.println("m_odometry, " + mt2.pose.getX() + ", " + mt2.pose.getY());
         }
@@ -449,7 +450,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     public void setTranslationToVision() {
         LimelightHelpers.setPipelineIndex("limelight", 0);
 
-        int[] validIDs = {8};
+        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
         LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
 
         boolean doRejectUpdate = false;

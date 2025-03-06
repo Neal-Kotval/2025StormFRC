@@ -69,7 +69,7 @@ public final class Constants {
     public static final double elevatorSafetyTicks = 0.66;
     public static final double L1ElevatorTicks = 7.98;
     public static final double L2ElevatorTicks = 18.40;
-    public static final double L3ElevatorTicks = 40.6;
+    public static final double L3ElevatorTicks = 42.36;
   }
 
   public static CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
