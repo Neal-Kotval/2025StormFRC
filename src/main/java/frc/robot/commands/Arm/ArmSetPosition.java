@@ -32,7 +32,7 @@ public class ArmSetPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getTicks()-targetTicks)<0.5;
+    return Math.abs(arm.getTicks()-targetTicks)<0.5;
   }
 
   @Override

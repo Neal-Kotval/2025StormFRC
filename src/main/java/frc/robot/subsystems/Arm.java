@@ -62,6 +62,19 @@ public class Arm extends SubsystemBase {
         return armMotor.getPosition().getValueAsDouble();
     }
 
+    /**
+     * Sets the target position for the elevator (in rotations) using closed-loop control.
+     * This method converts the target position to sensor ticks and adds a feedforward for gravity.
+     * @param targetRotations The desired elevator position (in rotations).
+     */
+    // public void setArmPosition(double targetRotations) {
+    //     // Convert the desired position from rotations to sensor ticks.
+    //     double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
+    //     // Send the closed-loop control request with the target and add our manually tuned gravity feedforward.
+    //     armMotor.setControl(positionControl.withPosition(targetTicks)
+    //                                            .withFeedForward(kG));
+    // }
+
     public void setArmPositionTicks(double ticks) {
         armMotor.setControl(positionControl.withPosition(ticks));
     }
