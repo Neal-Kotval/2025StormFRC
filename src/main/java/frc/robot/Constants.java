@@ -61,7 +61,7 @@ public final class Constants {
     public static final int elevatorRightMotor = 4;
     public static final int elevatorLeftMotor = 5;
     public static final int gyro = 0;
-    public static final int coralSensor = 99;
+    public static final int coralSensor = 25;
   }
 
   public static class TickValues {

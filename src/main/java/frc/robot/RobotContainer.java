@@ -140,13 +140,14 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        // joystick.y().onTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
-        joystick.y().whileTrue(new TimedSwerve(drivetrain, 1, 0, 0.1));
+        joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        joystick.povRight().onTrue(new TimedSwerve(drivetrain, 3.5, 0, 0.1));
+        joystick.povLeft().onTrue(new TimedSwerve(drivetrain, 3.5, 0, -0.1));
         // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.05));
-        leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.05));
+        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
+        leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
         padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
@@ -158,7 +159,7 @@ public class RobotContainer {
         // Set Positions (Elevator)
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
         operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
-        operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 4)));
+        operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 6.22)));
         operatorX.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, 0).withTimeout(2), new setArmPositionNeutral(arm, elevator)));
 
     }

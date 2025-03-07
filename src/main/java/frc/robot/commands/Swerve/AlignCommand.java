@@ -49,7 +49,7 @@ public class AlignCommand extends Command {
             .withRotationalDeadband(0.1)
             .withDriveRequestType(DriveRequestType.Velocity)
             .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-        MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.5;
+        MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.2;
         MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond) * 0.5;
         addRequirements(m_Vision, m_Swerve);
     }
