@@ -21,6 +21,9 @@ import com.ctre.phoenix6.controls.Follower;
 public class Elevator extends SubsystemBase {
     private final TalonFX masterMotor;
     private final TalonFX followerMotor;
+    private TrapezoidProfile.State m_goal;
+    private TrapezoidProfile.State m_setpoint;
+    private TrapezoidProfile.Constraints m_costraints = new TrapezoidProfile.Constraints(0.1, 0.1);
     // Create a PositionVoltage control request (using slot 0 for PID gains).
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
@@ -82,28 +85,27 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorPositionTicks(double ticks) {
 
-        // // Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
-        // final TrapezoidProfile m_profile = new TrapezoidProfile(
-        //     new TrapezoidProfile.Constraints(0.5, 0.1)
+        m_goal = new TrapezoidProfile.State(ticks, 0);
+        m_setpoint = new TrapezoidProfile.State();
 
-        // );
+        // Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
+        TrapezoidProfile m_profile = new TrapezoidProfile(m_constraints);
+        m_profile.calculate(0.20, m_setpoint, m_goal);
 
-        // // Final target of 200 rot, 0 rps
-        // TrapezoidProfile.State m_goal = new TrapezoidProfile.State(ticks, 0);
-        // TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
 
-        // // create a position closed-loop request, voltage output, slot 0 configs
-        // final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+        // create a position closed-loop request, voltage output, slot 0 configs
+        final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
-        // // calculate the next profile setpoint
-        // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
 
-        // // send the request to the device
-        // m_request.Position = m_setpoint.position;
-        // m_request.Velocity = m_setpoint.velocity;
-        positionControl.Velocity = 0.2;
+        // send the request to the device
+        m_request.Position = m_setpoint.position;
+        m_request.Velocity = m_setpoint.velocity;
 
-        masterMotor.setControl(positionControl.withPosition(ticks));
+        masterMotor.setControl(m_request);
+
+        //positionControl.Velocity = 0.2;
+
+        //masterMotor.setControl(positionControl.withPosition(ticks));
     }
 
     /**
