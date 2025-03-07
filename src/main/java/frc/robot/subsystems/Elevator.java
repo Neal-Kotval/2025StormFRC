@@ -23,7 +23,7 @@ public class Elevator extends SubsystemBase {
     private final TalonFX followerMotor;
     private TrapezoidProfile.State m_goal;
     private TrapezoidProfile.State m_setpoint;
-    private TrapezoidProfile.Constraints m_costraints = new TrapezoidProfile.Constraints(0.1, 0.1);
+    private TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(0.1, 0.1);
     // Create a PositionVoltage control request (using slot 0 for PID gains).
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
