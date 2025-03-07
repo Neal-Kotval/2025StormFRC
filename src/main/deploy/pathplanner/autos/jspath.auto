@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TO CORAL"
+            "pathName": "straight"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

@@ -38,6 +38,8 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasObject() {
+        System.out.println();
         return coralSensor.getIsDetected().getValue();
+        
     }
 }

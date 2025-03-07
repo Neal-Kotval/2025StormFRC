@@ -52,8 +52,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController joystick2 = new CommandXboxController(1);
+    private final CommandXboxController joystick = new CommandXboxController(1);
+    private final CommandXboxController joystick2 = new CommandXboxController(0);
 
     public final Swerve drivetrain = TunerConstants.createDrivetrain();
     private final SendableChooser<Command> autoChooser;
@@ -64,7 +64,7 @@ public class RobotContainer {
 
     //Operator
     public Trigger operatorY = new Trigger(joystick2.y());
-    public Trigger operatorX = new Trigger(joystick2.x());
+  
     public Trigger operatorA = new Trigger(joystick2.a());
     public Trigger operatorB = new Trigger(joystick2.b());
     public Trigger padUp = new Trigger(joystick2.povUp());
@@ -88,7 +88,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
         NamedCommands.registerCommand("intakeUntil", new IntakeUntilDetected(intake, -0.2));
         //NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
-        NamedCommands.registerCommand("TimedIntake", new TimedIntake(intake,2,-0.5));
+        NamedCommands.registerCommand("setL3", new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));
+        NamedCommands.registerCommand("TimedIntake", new TimedIntake(intake,5,-0.5));
 
 
 
@@ -140,8 +141,8 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        //joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
-        joystick.y().onTrue(drivetrain.driveToTag());
+        joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        //joystick.y().onTrue(drivetrain.driveToTag());
         joystick.povRight().onTrue(new TimedSwerve(drivetrain, 3.5, 0, 0.1));
         joystick.povLeft().onTrue(new TimedSwerve(drivetrain, 3.5, 0, -0.1));
         // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
@@ -152,17 +153,20 @@ public class RobotContainer {
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.1));
         padDown.whileTrue(new MoveElevator(elevator, arm, -0.1));
+        rightTrigger.whileTrue(new MoveIntake(intake, 0.4));
 
         // Outtake + Intake
-        leftBumper.whileTrue(new MoveIntake(intake, 0.08));
-        rightBumper.whileTrue(new MoveIntake(intake, -0.5));
+        rightBumper.whileTrue(new MoveIntake(intake, -0.1));
+        leftBumper.whileTrue(new MoveIntake(intake, 0.1));
+        rightTrigger.whileTrue(new MoveIntake(intake, -0.5));
+        leftTrigger.whileTrue(new MoveIntake(intake,0.5));
         
 
         // Set Positions (Elevator)
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
         operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
-        operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 6.22)));
-        operatorX.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, 0).withTimeout(2), new setArmPositionNeutral(arm, elevator)));
+        operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));
+        
 
     }
 

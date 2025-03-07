@@ -24,7 +24,7 @@ public class MoveElevator extends Command {
 
   @Override
   public void execute() {
-    if (arm.getTicks() < Constants.TickValues.armSafetyTicks) {
+    if (arm.getTicks() < Constants.TickValues.armSafetyTicks && power>0) {
       arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
     }
     elevator.setElevatorSpeed(power);

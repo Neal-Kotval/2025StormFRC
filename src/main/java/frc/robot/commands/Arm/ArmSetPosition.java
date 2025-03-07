@@ -22,9 +22,6 @@ public class ArmSetPosition extends Command {
 
   @Override
   public void execute() {
-    // if (elevator.getTicks() < Constants.TickValues.elevatorSafetyTicks) {
-    //   arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
-    // }
     arm.setArmPositionTicks(targetTicks);
   }
 
