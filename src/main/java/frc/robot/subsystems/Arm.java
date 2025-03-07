@@ -54,6 +54,7 @@ public class Arm extends SubsystemBase {
 
     public void setArmPositionTicks(double ticks) {
         armMotor.setControl(positionControl.withPosition(ticks));
+        //armMotor.setControl();
     }
 
     /**

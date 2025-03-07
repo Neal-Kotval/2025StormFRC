@@ -286,7 +286,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
 
-        updateMegaTagOdometry();
+        // updateMegaTagOdometry();
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -396,18 +396,46 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         
     }
 
-    public Command createDriveToPose(double x, double y, double theta) {
-        PathConstraints swerveConstraints = new PathConstraints(
-            12,
-            12,
-            540.0,
-            720.0,
-            12.0,
-            false
-        );
-        return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0);
+    public Command driveToTag() {
+        LimelightHelpers.setPipelineIndex("limelight", 0);
+
+        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
+        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
+
+        boolean doRejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
+                0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                            // vision updates
+        {
+            doRejectUpdate = true;
+        }
+        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
+
+        if (mt2.tagCount <= 0) {
+            doRejectUpdate = true;
+        }
         
+        System.out.println("Updating, " + mt2.tagCount);
+        if (!doRejectUpdate) {
+            return createDriveToPose(mt2.pose);
+        }
+        return (createDriveToPose(this.getState().Pose));
     }
+
+    // public Command createDriveToPose(double x, double y, double theta) {
+    //     PathConstraints swerveConstraints = new PathConstraints(
+    //         12,
+    //         12,
+    //         540.0,
+    //         720.0,
+    //         12.0,
+    //         false
+    //     );
+    //     return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0);
+        
+    // }
 
     public void updateMegaTagOdometry() {
         LimelightHelpers.setPipelineIndex("limelight", 0);
@@ -438,6 +466,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             m_odometry.addVisionMeasurement(
                     mt2.pose,
                     Timer.getFPGATimestamp());
+            this.resetPose(m_odometry.getEstimatedPosition());
 
             System.out.println("m_odometry, " + mt2.pose.getX() + ", " + mt2.pose.getY());
         }
@@ -462,7 +491,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         {
             doRejectUpdate = true;
         }
-        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
+        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAcreatesDouble()));
 
         if (mt2.tagCount <= 0) {
             doRejectUpdate = true;

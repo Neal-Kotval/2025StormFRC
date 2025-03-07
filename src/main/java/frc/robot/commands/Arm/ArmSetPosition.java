@@ -5,12 +5,10 @@ import frc.robot.subsystems.*;
 
 
 public class ArmSetPosition extends Command {
-  private final Elevator elevator;
   private final double targetTicks;
   private final Arm arm;
 
   public ArmSetPosition(Elevator elevator, Arm arm, double targetTicks) {
-    this.elevator = elevator;
     this.arm = arm;
     this.targetTicks = targetTicks;
     addRequirements(elevator);

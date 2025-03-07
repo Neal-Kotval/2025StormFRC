@@ -79,7 +79,7 @@ public class RobotContainer {
     public Trigger rightBumper = new Trigger(joystick2.rightBumper());
     public Trigger rightTrigger = new Trigger(()->(joystick2.getRightTriggerAxis()>0.1));
     public Trigger leftTrigger = new Trigger(()->(joystick2.getLeftTriggerAxis()>0.1));
-
+    
     public RobotContainer() {
 
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
@@ -87,7 +87,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
         NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
         NamedCommands.registerCommand("intakeUntil", new IntakeUntilDetected(intake, -0.2));
-        NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
+        //NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
         NamedCommands.registerCommand("TimedIntake", new TimedIntake(intake,2,-0.5));
 
 
@@ -117,7 +117,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -140,7 +140,8 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        //joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        joystick.y().onTrue(drivetrain.driveToTag());
         joystick.povRight().onTrue(new TimedSwerve(drivetrain, 3.5, 0, 0.1));
         joystick.povLeft().onTrue(new TimedSwerve(drivetrain, 3.5, 0, -0.1));
         // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
@@ -149,12 +150,13 @@ public class RobotContainer {
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
         leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
 
-        padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
-        padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
+        padUp.whileTrue(new MoveElevator(elevator, arm, 0.1));
+        padDown.whileTrue(new MoveElevator(elevator, arm, -0.1));
 
         // Outtake + Intake
-        leftBumper.whileTrue(new MoveIntake(intake, 0.05));
+        leftBumper.whileTrue(new MoveIntake(intake, 0.08));
         rightBumper.whileTrue(new MoveIntake(intake, -0.5));
+        
 
         // Set Positions (Elevator)
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));

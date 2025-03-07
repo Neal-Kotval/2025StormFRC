@@ -25,7 +25,7 @@ public class Vision extends SubsystemBase {
         "limelight",
         0, 
         0,
-        1,
+        0.4,
         0,
         0,
         0);
