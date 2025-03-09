@@ -8,9 +8,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
-
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.generated.TunerConstants;
 
 public class AlignCommand extends Command {

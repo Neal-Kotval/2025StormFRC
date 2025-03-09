@@ -5,26 +5,19 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-// import com.ctre.phoenix6.Utils;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-// import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-// import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -38,6 +31,7 @@ import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.SysId.SwerveDriveSysId;
 
 public class RobotContainer {
@@ -123,14 +117,6 @@ public class RobotContainer {
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        joystick.b().whileTrue(\
-        RunCommand(() -> drivetrain.applyRequest(() -> drivetrain.withVelocityX(-joystick.getLeftY() * MaxSpeed/2) // Drive forward with negative Y (forward)
-        .withVelocityY(-joystick.getLeftX() * MaxSpeed/2) // Drive left with negative X (left)
-        .withRotationalRate(joystick.getRightX() * MaxAngularRate/2)))); // Drive counterclockwise with negative X (left))))
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -138,18 +124,12 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // joystick.b().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
-
-        // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        // if (Utils.isSimulation()) {
-        //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
-        // }
-        //joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+
         joystick.y().onTrue(drivetrain.driveToTag());
         joystick.povRight().onTrue(new TimedSwerve(drivetrain, 3.5, 0, 0.1));
         joystick.povLeft().onTrue(new TimedSwerve(drivetrain, 3.5, 0, -0.1));
-        // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
+
         drivetrain.registerTelemetry(logger::telemeterize);
 
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
@@ -161,7 +141,6 @@ public class RobotContainer {
         // Outtake + Intake
         leftBumper.whileTrue(new MoveIntake(intake, 0.08));
         rightBumper.whileTrue(new MoveIntake(intake, -0.5));
-        
 
         // Set Positions (Elevator)
         operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));

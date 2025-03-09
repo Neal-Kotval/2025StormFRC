@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Swerve.Swerve;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
