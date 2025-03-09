@@ -1,13 +1,8 @@
 package frc.robot.commands.Intake;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Swerve;
 
 public class TimedIntake extends Command {
 
@@ -19,7 +14,7 @@ public class TimedIntake extends Command {
     public TimedIntake(Intake intake, double duration,double power) {
         this.intake = intake;
         this.duration = duration;
-        this.power =power;
+        this.power = power;
 
         addRequirements(intake);
     }

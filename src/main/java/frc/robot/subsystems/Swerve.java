@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-// import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -39,9 +38,6 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 
 import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.path.PathConstraints;
-// import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -49,30 +45,29 @@ import com.pathplanner.lib.path.PathConstraints;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import edu.wpi.first.wpilibj.Timer;
 
-/**
- * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
- * Subsystem so it can easily be used in command-based projects.
- */
+
 public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
+
+    // Simulation Constants
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    RobotConfig config;
 
-    /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
+    // Perspectives
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
-    /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
-    /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    /* Swerve requests to apply during SysId characterization */
+    // SysId Requests
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
     public final Translation2d zeroPose = new Translation2d(0,0);
 
+
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
+
+
     public final Pigeon2 m_gyro = new Pigeon2(0);
 
     // Locations for the swerve drive modules relative to the robot center.
@@ -80,6 +75,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     Translation2d m_frontRightLocation = new Translation2d(Units.inchesToMeters(15), -Units.inchesToMeters(14));
     Translation2d m_backLeftLocation = new Translation2d(-Units.inchesToMeters(15), Units.inchesToMeters(14));
     Translation2d m_backRightLocation = new Translation2d(-Units.inchesToMeters(15), -Units.inchesToMeters(14));
+
+    RobotConfig config;
+    
     // Creating my kinematics object using the module locations
     SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
@@ -97,8 +95,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             ()->this.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> this.setControl(AutoRequest.withSpeeds(speeds)), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(1.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(1.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

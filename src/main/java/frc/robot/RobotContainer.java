@@ -122,6 +122,11 @@ public class RobotContainer {
         );
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+        joystick.b().whileTrue(\
+        RunCommand(() -> drivetrain.applyRequest(() -> drivetrain.withVelocityX(-joystick.getLeftY() * MaxSpeed/2) // Drive forward with negative Y (forward)
+        .withVelocityY(-joystick.getLeftX() * MaxSpeed/2) // Drive left with negative X (left)
+        .withRotationalRate(joystick.getRightX() * MaxAngularRate/2)))); // Drive counterclockwise with negative X (left))))
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
@@ -133,7 +138,7 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.b().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
+        // joystick.b().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));

@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.UpdateModeValue;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -36,6 +38,17 @@ public final class Constants {
     public static final Distance REEF_APRILTAG_HEIGHT = Distance.ofBaseUnits(6.875, Inches);
     public static final Distance PROCCESSOR_APRILTAG_HEIGHT = Distance.ofBaseUnits(45.875, Inches);
     public static final Distance CORAL_APRILTAG_HEIGHT = Distance.ofBaseUnits(53.25, Inches);
+  }
+
+  public static class ElevatorConstants {
+    public static final double kMaxVelocity = 0.5;
+    public static final double kMaxAcceleration = 0.1;
+    public static final double kP = 2.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.1;
+    public static final double kG = 0.0;
+    public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
+    public static final TrapezoidProfile.Constraints elevatorUpConstraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
   }
 
   public static class PIDvalues {
