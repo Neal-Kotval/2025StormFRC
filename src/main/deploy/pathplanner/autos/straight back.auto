@@ -9,23 +9,11 @@
           "data": {
             "pathName": "straight"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setL4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "TimedIntake"
-          }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

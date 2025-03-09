@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
@@ -9,7 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.controls.Follower; 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage; 
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
  * The master motor runs a closed-loop PID based on its integrated relative encoder,
@@ -48,6 +50,7 @@ public class Elevator extends SubsystemBase {
         // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
         // followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         // followerMotor.getConfigurator().apply(followerConfiguration);
+        MotionMagicConfigs motionMagicConfigs;
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -55,6 +58,14 @@ public class Elevator extends SubsystemBase {
         config.Slot0.kI = kI;
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
+
+        // motionMagicConfigs = config.MotionMagic;
+        // motionMagicConfigs.MotionMagicCruiseVelocity = 3; // Target cruise velocity of 80 rps
+        // motionMagicConfigs.MotionMagicAcceleration = 3; // Target acceleration of 160 rps/s (0.5 seconds)
+        // motionMagicConfigs.MotionMagicJerk = 0.2; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        // // create a Motion Magic request, voltage output
+
+
         masterMotor.getConfigurator().apply(config);
         masterMotor.setNeutralMode(NeutralModeValue.Brake);
         followerMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -67,43 +78,19 @@ public class Elevator extends SubsystemBase {
         return masterMotor.getPosition().getValueAsDouble();
     }
 
-    /**
-     * Sets the target position for the elevator (in rotations) using closed-loop control.
-     * This method converts the target position to sensor ticks and adds a feedforward for gravity.
-     * @param targetRotations The desired elevator position (in rotations).
-     */
-    public void setElevatorPosition(double targetRotations) {
-        // Convert the desired position from rotations to sensor ticks.
-        double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
-        // Send the closed-loop control request with the target and add our manually tuned gravity feedforward.
-        masterMotor.setControl(positionControl.withPosition(targetTicks)
-                                               .withFeedForward(kG));
-    }
 
     public void setElevatorPositionTicks(double ticks) {
 
-        // // Trapezoid profile with max velocity 80 rps, max accel 160 rps/s
-        // final TrapezoidProfile m_profile = new TrapezoidProfile(
-        //     new TrapezoidProfile.Constraints(0.5, 0.1)
+        // final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+        // masterMotor.setControl(m_request.withPosition(ticks));
 
-        // );
-
-        // // Final target of 200 rot, 0 rps
-        // TrapezoidProfile.State m_goal = new TrapezoidProfile.State(ticks, 0);
-        // TrapezoidProfile.State m_setpoint = new TrapezoidProfile.State();
-
-        // // create a position closed-loop request, voltage output, slot 0 configs
-        // final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
-
-        // // calculate the next profile setpoint
-        // m_setpoint = m_profile.calculate(0.020, m_setpoint, m_goal);
-
-        // // send the request to the device
-        // m_request.Position = m_setpoint.position;
-        // m_request.Velocity = m_setpoint.velocity;
-        positionControl.Velocity = 0.2;
+        // positionControl.Velocity = 0.2;
 
         masterMotor.setControl(positionControl.withPosition(ticks));
+    }
+
+    public void setElevatorDown(double ticks) {
+
     }
 
     /**
