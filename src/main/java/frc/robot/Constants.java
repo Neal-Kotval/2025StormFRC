@@ -47,6 +47,7 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.1;
     public static final double kG = 0.0;
+    public static final double kMaxRotations = 44.36;
     public static final GravityTypeValue GravityType = GravityTypeValue.Elevator_Static;
     public static final TrapezoidProfile.Constraints elevatorUpConstraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
   }

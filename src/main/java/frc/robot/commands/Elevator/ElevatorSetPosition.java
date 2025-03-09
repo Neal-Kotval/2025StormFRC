@@ -32,12 +32,12 @@ public class ElevatorSetPosition extends Command {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(elevator.getTicks()-targetTicks)<0.5;
+    return Math.abs(elevator.getRotations()-targetTicks)<0.5;
   }
 
   @Override
   public void end(boolean interrupted) {
-    double currentTicks = elevator.getTicks();
+    double currentTicks = elevator.getRotations();
     elevator.moveTo(currentTicks);
   }
 }

@@ -34,8 +34,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-
+import frc.robot.subsystems.Elevator;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -67,7 +68,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-
+    public final Elevator mElevator = new Elevator();
     public final Pigeon2 m_gyro = new Pigeon2(0);
 
     // Locations for the swerve drive modules relative to the robot center.
@@ -335,7 +336,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-
+    public double swerveDampingFactor(double maxDamp) {
+        return (1-(maxDamp/ElevatorConstants.kMaxRotations)*mElevator.getRotations());
+    }
 
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate

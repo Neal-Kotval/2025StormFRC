@@ -66,10 +66,15 @@ public class Elevator extends SubsystemBase {
 
     }
 
-    public double getTicks() {
+    public double getRotations() {
         return masterMotor.getPosition().getValueAsDouble();
     }
 
+    public void periodic() {
+        if (this.getRotations() >= ElevatorConstants.kMaxRotations) {
+            this.setElevatorSpeed(0);
+        }
+    }
 
     public void moveTo(double rotations) {
         // create a Motion Magic request, voltage output
