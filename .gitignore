@@ -1,2 +1,8 @@
 build/
 bin/
+ctre_sim/
+logs/
+simgui-ds.json
+simgui-window.json
+simgui.json
+.vscode/
