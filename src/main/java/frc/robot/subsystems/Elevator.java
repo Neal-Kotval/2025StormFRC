@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -8,6 +9,9 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
+import frc.robot.Constants.ElevatorConstants;
 
 /**
  * This subsystem controls an elevator mechanism using two Falcon 500 motors.
@@ -23,17 +27,12 @@ public class Elevator extends SubsystemBase {
     // Create a PositionVoltage control request (using slot 0 for PID gains).
     private final PositionVoltage positionControl = new PositionVoltage(0);
 
-    // PID gains for closed-loop position control (tune these values for your mechanism)
-    private static final double kP = 2;
-    private static final double kI = 0.0;
-    private static final double kD = 0.1;
-    private static final double kG = 0;
-
     // Conversion constants:
     // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
     private static final double TICKS_PER_REV = 2048.0;
     // The gear ratio between the motor and the elevator (adjust if you have gearing)
     private static final double GEAR_RATIO = 1.0;
+    MotionMagicConfigs motionMagicConfigs;
 
 
     public Elevator() {
@@ -47,20 +46,20 @@ public class Elevator extends SubsystemBase {
         // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
         // followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         // followerMotor.getConfigurator().apply(followerConfiguration);
-        MotionMagicConfigs motionMagicConfigs;
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Slot0.kP = kP;
-        config.Slot0.kI = kI;
-        config.Slot0.kD = kD;
-        config.Slot0.kG = kG;
+        config.Slot0.kP = ElevatorConstants.kP;
+        config.Slot0.kI = ElevatorConstants.kI;
+        config.Slot0.kD = ElevatorConstants.kD;
+        config.Slot0.kG = ElevatorConstants.kG;
+        config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-        // motionMagicConfigs = config.MotionMagic;
-        // motionMagicConfigs.MotionMagicCruiseVelocity = 3; // Target cruise velocity of 80 rps
-        // motionMagicConfigs.MotionMagicAcceleration = 3; // Target acceleration of 160 rps/s (0.5 seconds)
-        // motionMagicConfigs.MotionMagicJerk = 0.2; // Target jerk of 1600 rps/s/s (0.1 seconds)
-        // // create a Motion Magic request, voltage output
+        motionMagicConfigs = config.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 1; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 0.1; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 0.01; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        // create a Motion Magic request, voltage output
 
 
         masterMotor.getConfigurator().apply(config);
@@ -78,12 +77,9 @@ public class Elevator extends SubsystemBase {
 
     public void setElevatorPositionTicks(double ticks) {
 
-        // final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-        // masterMotor.setControl(m_request.withPosition(ticks));
+        final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+        masterMotor.setControl(m_request.withPosition(ticks));
 
-        // positionControl.Velocity = 0.2;
-
-        masterMotor.setControl(positionControl.withPosition(ticks));
     }
 
     public void setElevatorDown(double ticks) {
