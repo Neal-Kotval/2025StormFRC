@@ -97,8 +97,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             ()->this.getState().Speeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> this.setControl(AutoRequest.withSpeeds(speeds)), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(0.1, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(0.1, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(2, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,

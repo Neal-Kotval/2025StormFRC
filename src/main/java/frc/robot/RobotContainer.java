@@ -52,8 +52,8 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(1);
-    private final CommandXboxController joystick2 = new CommandXboxController(0);
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick2 = new CommandXboxController(1);
 
     public final Swerve drivetrain = TunerConstants.createDrivetrain();
     private final SendableChooser<Command> autoChooser;
@@ -64,7 +64,7 @@ public class RobotContainer {
 
     //Operator
     public Trigger operatorY = new Trigger(joystick2.y());
-  
+    public Trigger operatorX = new Trigger(joystick2.x());
     public Trigger operatorA = new Trigger(joystick2.a());
     public Trigger operatorB = new Trigger(joystick2.b());
     public Trigger padUp = new Trigger(joystick2.povUp());
@@ -149,8 +149,8 @@ public class RobotContainer {
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
         leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
 
-        padUp.whileTrue(new MoveElevator(elevator, arm, 0.1));
-        padDown.whileTrue(new MoveElevator(elevator, arm, -0.1));
+        padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
+        padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
         rightTrigger.whileTrue(new MoveIntake(intake, 0.4));
 
         // Outtake + Intake
@@ -161,8 +161,8 @@ public class RobotContainer {
         
 
         // Set Positions (Elevator)
-        operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
-        operatorB.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
+        // operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
+        operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));
         
 
