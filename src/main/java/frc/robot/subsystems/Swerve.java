@@ -285,7 +285,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
 
-        // updateMegaTagOdometry();
+        updateMegaTagOdometry();
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -424,6 +424,13 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public double swerveDampingFactor(double maxDamp) {
+        double currTicks;
+        currTicks = m_elevator.getTicks();
+        if (currTicks < 0) {
+            currTicks = 0;
+        } else if (currTicks > ElevatorConstants.kMaxRotations) {
+            currTicks = ElevatorConstants.kMaxRotations;
+        }
         return (1 - (maxDamp/ElevatorConstants.kMaxRotations)*(m_elevator.getTicks() > ElevatorConstants.kMaxRotations ? ElevatorConstants.kMaxRotations : m_elevator.getTicks()));
     }
 
@@ -474,38 +481,19 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                     Timer.getFPGATimestamp());
             this.resetPose(m_odometry.getEstimatedPosition());
 
-            System.out.println("m_odometry, " + mt2.pose.getX() + ", " + mt2.pose.getY());
+            System.out.println("m_odometry, " + m_odometry.getEstimatedPosition().getX() + ", " + m_odometry.getEstimatedPosition().getY());
         }
+    }
+
+    public String argh() {
+        double x = m_odometry.getEstimatedPosition().getX();
+        double y = m_odometry.getEstimatedPosition().getX();
+        double theta  = m_odometry.getEstimatedPosition().getRotation().getDegrees();
+        return x + ", " + y + ", " + theta;
+
     }
 
     public Pose2d getEstimatedPose() {
         return m_odometry.getEstimatedPosition();
-    }
-
-    public void setTranslationToVision() {
-        LimelightHelpers.setPipelineIndex("limelight", 0);
-
-        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
-        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
-
-        boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
-                0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                            // vision updates
-        {
-            doRejectUpdate = true;
-        }
-        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAcreatesDouble()));
-
-        if (mt2.tagCount <= 0) {
-            doRejectUpdate = true;
-        }
-        
-        System.out.println("Updating, " + mt2.tagCount);
-        if (!doRejectUpdate) {
-            this.resetPose(mt2.pose);
-        }
     }
 }

@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Arm.*;
+import frc.robot.commands.Elevator.CurrentSetter;
 import frc.robot.commands.Elevator.ElevatorSetPosition;
 import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Intake.IntakeUntilDetected;
@@ -81,7 +82,6 @@ public class RobotContainer {
     public Trigger leftTrigger = new Trigger(()->(joystick2.getLeftTriggerAxis()>0.1));
     
     public RobotContainer() {
-
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
         NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
         NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
@@ -116,11 +116,13 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * drivetrain.swerveDampingFactor(0.5)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * drivetrain.swerveDampingFactor(0.1)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * drivetrain.swerveDampingFactor(0.1)) // Drive left with negative X (left)
+                    .withRotationalRate(joystick.getRightX() * MaxAngularRate * drivetrain.swerveDampingFactor(0.1)) // Drive counterclockwise with negative X (left)
             )
         );
+
+        //elevator.setDefaultCommand(new CurrentSetter(elevator));
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -148,10 +150,13 @@ public class RobotContainer {
 
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
         leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
+        padLeft.onTrue(new IntakeUntilDetected(intake, -0.7));
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
         padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));
+
         rightTrigger.whileTrue(new MoveIntake(intake, 0.4));
+        
 
         // Outtake + Intake
         rightBumper.whileTrue(new MoveIntake(intake, -0.1));

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve;
 
 /**
@@ -28,9 +29,11 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  public final Swerve drivetrain = TunerConstants.createDrivetrain();
+  //public final Swerve drivetrain = TunerConstants.createDrivetrain();
   public final Arm arm = new Arm();
   public final Elevator elevator = new Elevator();
+  public final Intake intake = new Intake();
+  public final Swerve drivetrain = TunerConstants.createDrivetrain();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -40,27 +43,10 @@ public class Robot extends TimedRobot {
   double ty;
   double ta;
 
-  private NetworkTableEntry xEntry;
-  private NetworkTableEntry yEntry;
-  private NetworkTableEntry thetaEntry;
-
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    // Get the Shuffleboard NetworkTable
-    var table = NetworkTableInstance.getDefault().getTable("PoseWidget");
-
-    // Create entries for X, Y, and Theta
-    xEntry = table.getEntry("x");
-    yEntry = table.getEntry("y");
-    thetaEntry = table.getEntry("theta");
-
-    // Initialize with default values
-    xEntry.setDouble(0.0);
-    yEntry.setDouble(0.0);
-    thetaEntry.setDouble(0.0);
   }
 
   /**
@@ -76,12 +62,26 @@ public class Robot extends TimedRobot {
     double x = drivetrain.getState().Pose.getX(); // Replace with real method
     double y = drivetrain.getState().Pose.getX(); // Replace with real method
     double theta = drivetrain.getState().Pose.getRotation().getDegrees(); // Replace with real method
- 
-    // Send updated values to Shuffleboard
-    xEntry.setDouble(x);
-    yEntry.setDouble(y);
-    thetaEntry.setDouble(theta);
 
+    SmartDashboard.putNumber("X-Coord", x);
+    SmartDashboard.putNumber("Y-Coord", y);
+    SmartDashboard.putNumber("Theta-Coord", theta);
+
+    tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+    tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+
+    SmartDashboard.putNumber("LX", tx);
+    SmartDashboard.putNumber("LY", ty);
+    SmartDashboard.putNumber("LV", tv);
+    SmartDashboard.putNumber("LA", ta);
+    SmartDashboard.putString("ARGH", drivetrain.argh());
+
+
+    
+
+    SmartDashboard.putBoolean("CANRange", intake.hasObject());
     CommandScheduler.getInstance().run();
   }
 

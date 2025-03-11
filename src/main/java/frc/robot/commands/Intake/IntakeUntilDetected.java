@@ -1,8 +1,9 @@
 package frc.robot.commands.Intake;
 import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class IntakeUntilDetected extends Command{
+public class IntakeUntilDetected extends Command {
 
     private final Intake intake; 
     private final double power;
@@ -24,7 +25,11 @@ public class IntakeUntilDetected extends Command{
         return intake.hasObject();
     }
 
-    public void end() {
+    public void end(boolean interrupted) {
+        double startTime = Timer.getFPGATimestamp();
+        while(Math.abs(Timer.getFPGATimestamp()-startTime) < 0.15) {
+            intake.setIntakeSpeed(-0.2);
+        }
         intake.setIntakeSpeed(0);
     }
 }

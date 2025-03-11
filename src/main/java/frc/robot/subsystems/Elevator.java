@@ -5,11 +5,14 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 
 import frc.robot.Constants.ElevatorConstants;
 
@@ -40,9 +43,9 @@ public class Elevator extends SubsystemBase {
         config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         motionMagicConfigs = config.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 1; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 0.1; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 0.01; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 30; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 300; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 3000; // Target jerk of 1600 rps/s/s (0.1 seconds)
         // create a Motion Magic request, voltage output
 
         masterMotor.getConfigurator().apply(config);
@@ -57,10 +60,21 @@ public class Elevator extends SubsystemBase {
         return masterMotor.getPosition().getValueAsDouble();
     }
 
+    public Command getCurrentSetter() {
+        return new InstantCommand(() -> {
+            double currentTicks = this.getTicks();
+            final PositionVoltage m_request = new PositionVoltage(0);
+            masterMotor.setControl(m_request.withPosition(currentTicks));
+        });
+    }
 
     public void setElevatorPosition(double rotations) {
-
         final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+        masterMotor.setControl(m_request.withPosition(rotations));
+    }
+
+    public void setElevatorPositionDefault(double rotations) {
+        final PositionVoltage m_request = new PositionVoltage(0);
         masterMotor.setControl(m_request.withPosition(rotations));
     }
 
@@ -78,9 +92,9 @@ public class Elevator extends SubsystemBase {
         masterMotor.set(speed);
     }
 
-    public void periodic() {
-        if (this.getTicks() >= ElevatorConstants.kMaxRotations) {
-            this.setElevatorSpeed(0);
-        }
-    }
+    // public void periodic() {
+    //     if (this.getTicks() >= ElevatorConstants.kMaxRotations) {
+    //         this.setElevatorSpeed(0);
+    //     }
+    // }
 }

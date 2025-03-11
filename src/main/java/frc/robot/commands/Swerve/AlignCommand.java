@@ -63,7 +63,7 @@ public class AlignCommand extends Command {
 
     @Override
     public void execute() {
-        double currentTargetTX = m_Vision.getTargetTX();
+        double currentTargetTX = m_Vision.getTargetTX()+2;
         double currentTargetTY = m_Vision.getTargetTY();
         double currentTargetAngle = m_Vision.getTargetAngle();
 
