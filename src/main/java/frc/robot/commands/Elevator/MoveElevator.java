@@ -38,7 +38,7 @@ public class MoveElevator extends Command {
   @Override
   public void end(boolean interrupted) {
     double currentTicks = elevator.getTicks();
-    elevator.setElevatorPositionTicks(currentTicks);
+    elevator.setElevatorPosition(currentTicks);
     //arm.setArmSpeed(0);
     // elevator.setElevatorSpeed(0);
   }

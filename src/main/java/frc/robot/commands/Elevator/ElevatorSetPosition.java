@@ -27,7 +27,7 @@ public class ElevatorSetPosition extends Command {
     if (arm.getTicks() < Constants.TickValues.armSafetyTicks) {
       arm.setArmPositionTicks(Constants.TickValues.armSafetyTicks);
     }
-    elevator.setElevatorPositionTicks(targetTicks);
+    elevator.setElevatorPosition(targetTicks);
   }
 
   @Override
@@ -38,6 +38,6 @@ public class ElevatorSetPosition extends Command {
   @Override
   public void end(boolean interrupted) {
     double currentTicks = elevator.getTicks();
-    elevator.setElevatorPositionTicks(currentTicks);
+    elevator.setElevatorPosition(currentTicks);
   }
 }

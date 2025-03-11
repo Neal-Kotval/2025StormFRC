@@ -24,28 +24,12 @@ import frc.robot.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
     private final TalonFX masterMotor;
     private final TalonFX followerMotor;
-    // Create a PositionVoltage control request (using slot 0 for PID gains).
-    private final PositionVoltage positionControl = new PositionVoltage(0);
-
-    // Conversion constants:
-    // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
-    private static final double TICKS_PER_REV = 2048.0;
-    // The gear ratio between the motor and the elevator (adjust if you have gearing)
-    private static final double GEAR_RATIO = 1.0;
     MotionMagicConfigs motionMagicConfigs;
-
 
     public Elevator() {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
         followerMotor = new TalonFX(Constants.CANids.elevatorRightMotor);
-
-
-
         followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, false));
-        
-        // TalonFXConfiguration followerConfiguration = new TalonFXConfiguration();
-        // followerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        // followerMotor.getConfigurator().apply(followerConfiguration);
 
         // Configure PID gains on the master using slot 0.
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -61,7 +45,6 @@ public class Elevator extends SubsystemBase {
         motionMagicConfigs.MotionMagicJerk = 0.01; // Target jerk of 1600 rps/s/s (0.1 seconds)
         // create a Motion Magic request, voltage output
 
-
         masterMotor.getConfigurator().apply(config);
         masterMotor.setNeutralMode(NeutralModeValue.Brake);
         followerMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -75,15 +58,10 @@ public class Elevator extends SubsystemBase {
     }
 
 
-    public void setElevatorPositionTicks(double ticks) {
+    public void setElevatorPosition(double rotations) {
 
         final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-        masterMotor.setControl(m_request.withPosition(ticks));
-
-    }
-
-    public void setElevatorDown(double ticks) {
-
+        masterMotor.setControl(m_request.withPosition(rotations));
     }
 
     /**
@@ -96,14 +74,13 @@ public class Elevator extends SubsystemBase {
         masterMotor.setPosition(pos);
     }
 
-    /**
-     * Stops the elevator by setting the motor output to zero.
-     */
-    public void stopElevator() {
-        masterMotor.set(0);
-    }
-
     public void setElevatorSpeed(double speed) {
         masterMotor.set(speed);
+    }
+
+    public void periodic() {
+        if (this.getTicks() >= ElevatorConstants.kMaxRotations) {
+            this.setElevatorSpeed(0);
+        }
     }
 }

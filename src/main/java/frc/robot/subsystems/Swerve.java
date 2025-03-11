@@ -12,8 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-// import com.ctre.phoenix6.swerve.SwerveRequest.ApplyRobotSpeeds;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 
@@ -74,6 +73,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
     public final Pigeon2 m_gyro = new Pigeon2(0);
+    public final Elevator m_elevator = new Elevator();
 
     // Locations for the swerve drive modules relative to the robot center.
     Translation2d m_frontLeftLocation = new Translation2d(Units.inchesToMeters(15), Units.inchesToMeters(14));
@@ -423,6 +423,10 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return (createDriveToPose(this.getState().Pose));
     }
 
+    public double swerveDampingFactor(double maxDamp) {
+        return (1 - (maxDamp/ElevatorConstants.kMaxRotations)*(m_elevator.getTicks() > ElevatorConstants.kMaxRotations ? ElevatorConstants.kMaxRotations : m_elevator.getTicks()));
+    }
+
     // public Command createDriveToPose(double x, double y, double theta) {
     //     PathConstraints swerveConstraints = new PathConstraints(
     //         12,
@@ -432,8 +436,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     //         12.0,
     //         false
     //     );
-    //     return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0);
-        
+    //     return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0); 
     // }
 
     public void updateMegaTagOdometry() {
@@ -446,6 +449,10 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
                 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        if (mt2 == null) {
+            return;
+        }
         if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
                                             // vision updates
         {
