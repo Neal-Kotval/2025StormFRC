@@ -71,6 +71,12 @@ public final class Constants {
     public static final double L2ElevatorTicks = 22.40;
     public static final double L3ElevatorTicks = 42.36;
   }
+  public static class ElevatorConstants {
+    public static final double kP = 2;
+    public static final double kI = 0;
+    public static final double kD = 0.1;
+    public static final double kG = 0;
+  }
 
   public static CANrangeConfiguration coralSensorConfig = new CANrangeConfiguration();
   static {
