@@ -19,7 +19,7 @@ import frc.robot.subsystems.Swerve;
  */
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.networktables.NetworkTableEntry;
 // import edu.wpi.first.networktables.NetworkTable;
 // import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -40,10 +40,27 @@ public class Robot extends TimedRobot {
   double ty;
   double ta;
 
+  private NetworkTableEntry xEntry;
+  private NetworkTableEntry yEntry;
+  private NetworkTableEntry thetaEntry;
+
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // Get the Shuffleboard NetworkTable
+    var table = NetworkTableInstance.getDefault().getTable("PoseWidget");
+
+    // Create entries for X, Y, and Theta
+    xEntry = table.getEntry("x");
+    yEntry = table.getEntry("y");
+    thetaEntry = table.getEntry("theta");
+
+    // Initialize with default values
+    xEntry.setDouble(0.0);
+    yEntry.setDouble(0.0);
+    thetaEntry.setDouble(0.0);
   }
 
   /**
@@ -53,31 +70,18 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
-  @Override
+  @Override 
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    //read values periodically
+    // Example: Get X, Y, and Theta from odometry or sensors
+    double x = drivetrain.getState().Pose.getX(); // Replace with real method
+    double y = drivetrain.getState().Pose.getX(); // Replace with real method
+    double theta = drivetrain.getState().Pose.getRotation().getDegrees(); // Replace with real method
+ 
+    // Send updated values to Shuffleboard
+    xEntry.setDouble(x);
+    yEntry.setDouble(y);
+    thetaEntry.setDouble(theta);
 
-    //post to smart dashboard periodically
-    tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
-    SmartDashboard.putNumber("Estimated Pose X", drivetrain.getEstimatedPose().getX());
-    SmartDashboard.putNumber("Estimated Pose Y", drivetrain.getEstimatedPose().getY());
-    SmartDashboard.putNumber("Estimated Pose Theta", drivetrain.getEstimatedPose().getRotation().getDegrees());
-
-
-    SmartDashboard.putNumber("LX", tx);
-    SmartDashboard.putNumber("LY", ty);
-    SmartDashboard.putNumber("LV", tv);
-    SmartDashboard.putNumber("LA", ta);
-    SmartDashboard.putNumber("Ticks of Arm", arm.getTicks());
-    SmartDashboard.putNumber("Ticks of Elevator", elevator.getTicks());
-    
     CommandScheduler.getInstance().run();
   }
 

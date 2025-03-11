@@ -134,7 +134,7 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.b().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
+        //joystick.b().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -143,8 +143,6 @@ public class RobotContainer {
         // }
         joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
         //joystick.y().onTrue(drivetrain.driveToTag());
-        joystick.povRight().onTrue(new TimedSwerve(drivetrain, 3.5, 0, 0.1));
-        joystick.povLeft().onTrue(new TimedSwerve(drivetrain, 3.5, 0, -0.1));
         // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
         drivetrain.registerTelemetry(logger::telemeterize);
 
