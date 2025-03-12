@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Encoder;
@@ -84,6 +85,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
     );
+
 
     SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
     m_kinematics, m_gyro.getRotation2d(),
@@ -478,22 +480,58 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
             m_odometry.addVisionMeasurement(
                     mt2.pose,
-                    Timer.getFPGATimestamp());
+                    mt2.timestampSeconds);
             this.resetPose(m_odometry.getEstimatedPosition());
 
             System.out.println("m_odometry, " + m_odometry.getEstimatedPosition().getX() + ", " + m_odometry.getEstimatedPosition().getY());
         }
     }
 
-    public String argh() {
-        double x = m_odometry.getEstimatedPosition().getX();
-        double y = m_odometry.getEstimatedPosition().getX();
-        double theta  = m_odometry.getEstimatedPosition().getRotation().getDegrees();
-        return x + ", " + y + ", " + theta;
+    public Pose2d fetchPoseM2() {
+        LimelightHelpers.setPipelineIndex("limelight", 0);
+    
+        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
+        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
 
+        boolean doRejectUpdate = false;
+        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
+                0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        if (mt2 == null) {
+            return this.getState().Pose;
+        }
+        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                            // vision updates
+        {
+            doRejectUpdate = true;
+        }
+        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
+
+        if (mt2.tagCount <= 0) {
+            doRejectUpdate = true;
+        }
+        
+        if (!doRejectUpdate) {
+            // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
+            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+
+            m_odometry.addVisionMeasurement(
+                    mt2.pose,
+                    mt2.timestampSeconds);
+            this.resetPose(m_odometry.getEstimatedPosition());
+
+            return mt2.pose;
+        }
+
+        return this.getState().Pose;
     }
 
     public Pose2d getEstimatedPose() {
         return m_odometry.getEstimatedPosition();
+    }
+
+    public Pose2d getEasyPose(double x, double y, double theta) {
+        return new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(theta)));
     }
 }

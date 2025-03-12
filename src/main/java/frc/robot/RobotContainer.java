@@ -83,7 +83,7 @@ public class RobotContainer {
     
     public RobotContainer() {
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
-        NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
+        //NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
         NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
         NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
         NamedCommands.registerCommand("intakeUntil", new IntakeUntilDetected(intake, -0.2));

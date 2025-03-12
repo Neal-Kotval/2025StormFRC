@@ -76,7 +76,16 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LY", ty);
     SmartDashboard.putNumber("LV", tv);
     SmartDashboard.putNumber("LA", ta);
-    SmartDashboard.putString("ARGH", drivetrain.argh());
+
+    double mx = drivetrain.fetchPoseM2().getX();
+    double my = drivetrain.fetchPoseM2().getX();
+    double mtheta = drivetrain.fetchPoseM2().getRotation().getDegrees();
+
+    SmartDashboard.putNumber("MX", mx);
+    SmartDashboard.putNumber("MY", mx);
+    SmartDashboard.putNumber("MTHETA", mx);
+
+    
 
 
     
