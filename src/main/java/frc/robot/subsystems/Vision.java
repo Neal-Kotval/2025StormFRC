@@ -21,15 +21,9 @@ public class Vision extends SubsystemBase {
 
   //Configurate Limelight Position
   public void config() {
-    LimelightHelpers.setCameraPose_RobotSpace(
-        "limelight",
-        0, 
-        0,
-        0.4,
-        0,
-        0,
-        0);
-    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", new int[] {6,7,8,9,10,11,17,18,19,20,21,22});
+    LimelightHelpers.setPipelineIndex("limelight", 0);
+    int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
+    LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
   }
 
   @Override

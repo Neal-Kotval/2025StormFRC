@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -93,7 +94,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     this.getState().ModulePositions, 
     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
     VecBuilder.fill(0.1, 0.1, 0.1),
-    VecBuilder.fill(0.1, 0.1, 0.1));
+    VecBuilder.fill(0.1, 0.1, 100));
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
@@ -228,8 +229,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
-
-        //updateMegaTagOdometry();
+        m_odometry.updateWithTime(Timer.getFPGATimestamp(), m_gyro.getRotation2d(), this.getState().ModulePositions);
+        //m_odometry.addVisionMeasurement(getEasyPose(1, 3, 0), Timer.getFPGATimestamp()-0.02);
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -314,18 +315,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return (1 - (maxDamp/ElevatorConstants.kMaxRotations)*(m_elevator.getTicks() > ElevatorConstants.kMaxRotations ? ElevatorConstants.kMaxRotations : m_elevator.getTicks()));
     }
 
-    // public Command createDriveToPose(double x, double y, double theta) {
-    //     PathConstraints swerveConstraints = new PathConstraints(
-    //         12,
-    //         12,
-    //         540.0,
-    //         720.0,
-    //         12.0,
-    //         false
-    //     );
-    //     return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0); 
-    // }
-
     public void drive(Translation2d translationalVelocities, double rotationalVelocity) {
         SwerveRequest m_request = new SwerveRequest.RobotCentric()
             .withVelocityX(translationalVelocities.getX())
@@ -335,11 +324,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public void updateMegaTagOdometry() {
-        LimelightHelpers.setPipelineIndex("limelight", 0);
-
-        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
-        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
-
         boolean doRejectUpdate = false;
         LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
                 0, 0, 0, 0);
@@ -362,12 +346,10 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         if (!doRejectUpdate) {
             // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
             // m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-            System.out.println(Utils.fpgaToCurrentTime(mt2.timestampSeconds));
             m_odometry.addVisionMeasurement(
                     mt2.pose,
-                    Timer.getFPGATimestamp());
-            this.resetPose(m_odometry.getEstimatedPosition());
-
+                    Utils.fpgaToCurrentTime(mt2.timestampSeconds));
+            
             System.out.println("m_odometry, " + m_odometry.getEstimatedPosition().getX() + ", " + m_odometry.getEstimatedPosition().getY());
         }
     }
