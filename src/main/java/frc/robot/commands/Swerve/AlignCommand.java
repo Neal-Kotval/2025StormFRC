@@ -37,7 +37,7 @@ public class AlignCommand extends Command {
     private double lastHorizontalAdjust = 0.0; // Last horizontal adjustment for smoothing
     
     private final Timer lostDetectionTimer = new Timer();
-    private static final double lostDetectionTimeout = 0.2; // 0.5 seconds timeout for lost detection
+    private static final double lostDetectionTimeout = 0.5; // 0.5 seconds timeout for lost detection
 
     public AlignCommand(Vision vision, Swerve swerve, double targetDistance, double targetAngle) {
         m_Vision = vision;
@@ -63,8 +63,8 @@ public class AlignCommand extends Command {
 
     @Override
     public void execute() {
-        double currentTargetTX = m_Vision.getTargetTX()+0.5;
-        double currentTargetTY = m_Vision.getTargetTY()+3;
+        double currentTargetTX = m_Vision.getTargetTX();
+        double currentTargetTY = m_Vision.getTargetTY();
         double currentTargetAngle = m_Vision.getTargetAngle();
 
         if (currentTargetTX != 0.0 || currentTargetTY != 0.0 || currentTargetAngle != 0.0) {

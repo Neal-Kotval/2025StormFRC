@@ -178,16 +178,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants   Drivetrain-wide constants for the swerve drive
-     * @param modules               Constants for each specific module
-     */
     public Swerve(
         SwerveDrivetrainConstants drivetrainConstants,
         SwerveModuleConstants<?, ?, ?>... modules
@@ -199,19 +189,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         configurePathPlanner();
     }
 
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency The frequency to run the odometry loop. If
-     *                                unspecified or set to 0 Hz, this is 250 Hz on
-     *                                CAN FD, and 100 Hz on CAN 2.0.
-     * @param modules                 Constants for each specific module
-     */
     public Swerve(
         SwerveDrivetrainConstants drivetrainConstants,
         double odometryUpdateFrequency,
@@ -223,25 +200,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         }
     }
 
-    /**
-     * Constructs a CTRE SwerveDrivetrain using the specified constants.
-     * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
-     * getters in the classes.
-     *
-     * @param drivetrainConstants       Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency   The frequency to run the odometry loop. If
-     *                                  unspecified or set to 0 Hz, this is 250 Hz on
-     *                                  CAN FD, and 100 Hz on CAN 2.0.
-     * @param odometryStandardDeviation The standard deviation for odometry calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
-     *                                  and radians
-     * @param visionStandardDeviation   The standard deviation for vision calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
-     *                                  and radians
-     * @param modules                   Constants for each specific module
-     */
     public Swerve(
         SwerveDrivetrainConstants drivetrainConstants,
         double odometryUpdateFrequency,
@@ -256,34 +214,14 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         configurePathPlanner();
     }
 
-    /**
-     * Returns a command that applies the specified control request to this swerve drivetrain.
-     *
-     * @param request Function returning the request to apply
-     * @return Command to run
-     */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    /**
-     * Runs the SysId Quasistatic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Quasistatic test
-     * @return Command to run
-     */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.quasistatic(direction);
     }
 
-    /**
-     * Runs the SysId Dynamic test in the given direction for the routine
-     * specified by {@link #m_sysIdRoutineToApply}.
-     *
-     * @param direction Direction of the SysId Dynamic test
-     * @return Command to run
-     */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
@@ -292,13 +230,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     public void periodic() {
 
         //updateMegaTagOdometry();
-        /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
-         */
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
@@ -308,18 +240,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 );
                 m_hasAppliedOperatorPerspective = true;
             });
-        }
-
-        // updateOdometry();
-
-        /*
-         * Periodically check for negative translational pose.
-         */
-        if (this.getState().Pose.getX() < 0) {
-            resetPose(new Pose2d(new Translation2d(0,this.getState().Pose.getY()), this.getState().Pose.getRotation()));
-        }
-        if (this.getState().Pose.getY() < 0) {
-            resetPose(new Pose2d(new Translation2d(this.getState().Pose.getX(), 0), this.getState().Pose.getRotation()));
         }
 
         SmartDashboard.putNumber("PoseX", this.getState().Pose.getX());
@@ -342,38 +262,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     * <p>
-     * Note that the vision measurement standard deviations passed into this method
-     * will continue to apply to future measurements until a subsequent call to
-     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
-     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
-     */
-    @Override
-    public void addVisionMeasurement(
-        Pose2d visionRobotPoseMeters,
-        double timestampSeconds,
-        Matrix<N3, N1> visionMeasurementStdDevs
-    ) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
-    }
-
-    /**
-     * Kinematic path following constraints
-     *
-     * @param maxVelocityMPS Max linear velocity (M/S)
-     * @param maxAccelerationMPSSq Max linear acceleration (M/S^2)
-     * @param maxAngularVelocityRadPerSec Max angular velocity (Rad/S)
-     * @param maxAngularAccelerationRadPerSecSq Max angular acceleration (Rad/S^2)
-     * @param nominalVoltageVolts The nominal battery voltage (Volts)
-     * @param unlimited Should the constraints be unlimited
-     */
     public Command createDriveToPose(Pose2d pose) {
         PathConstraints swerveConstraints = new PathConstraints(
             12,
@@ -438,6 +326,14 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     //     return AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(x, y), new Rotation2d(theta)), swerveConstraints, 0.0); 
     // }
 
+    public void drive(Translation2d translationalVelocities, double rotationalVelocity) {
+        SwerveRequest m_request = new SwerveRequest.RobotCentric()
+            .withVelocityX(translationalVelocities.getX())
+            .withVelocityY(translationalVelocities.getY())
+            .withRotationalRate(rotationalVelocity);
+        this.setControl(m_request);
+    }
+
     public void updateMegaTagOdometry() {
         LimelightHelpers.setPipelineIndex("limelight", 0);
 
@@ -495,14 +391,12 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         {
             doRejectUpdate = true;
         }
-        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
 
         if (mt2.tagCount <= 0) {
             doRejectUpdate = true;
         }
         
         if (!doRejectUpdate) {
-            // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
 
             return mt2.pose;
         }
