@@ -88,8 +88,12 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
 
     SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
-    m_kinematics, m_gyro.getRotation2d(),
-    this.getState().ModulePositions, new Pose2d(0, 0, new Rotation2d()));
+    m_kinematics, 
+    m_gyro.getRotation2d(),
+    this.getState().ModulePositions, 
+    new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+    VecBuilder.fill(0.1, 0.1, 0.1),
+    VecBuilder.fill(0.1, 0.1, 0.1));
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
@@ -287,7 +291,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
 
-        updateMegaTagOdometry();
+        //updateMegaTagOdometry();
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -336,20 +340,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-
-
-
-    /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     */
-    @Override
-    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
     /**
@@ -473,14 +463,13 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             doRejectUpdate = true;
         }
         
-        System.out.println("Updating, " + mt2.tagCount);
         if (!doRejectUpdate) {
             // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
-            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-
+            // m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+            System.out.println(Utils.fpgaToCurrentTime(mt2.timestampSeconds));
             m_odometry.addVisionMeasurement(
                     mt2.pose,
-                    mt2.timestampSeconds);
+                    Timer.getFPGATimestamp());
             this.resetPose(m_odometry.getEstimatedPosition());
 
             System.out.println("m_odometry, " + m_odometry.getEstimatedPosition().getX() + ", " + m_odometry.getEstimatedPosition().getY());
@@ -514,12 +503,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         
         if (!doRejectUpdate) {
             // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
-            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-
-            m_odometry.addVisionMeasurement(
-                    mt2.pose,
-                    mt2.timestampSeconds);
-            this.resetPose(m_odometry.getEstimatedPosition());
 
             return mt2.pose;
         }

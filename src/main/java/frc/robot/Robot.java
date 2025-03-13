@@ -82,16 +82,24 @@ public class Robot extends TimedRobot {
     double mtheta = drivetrain.fetchPoseM2().getRotation().getDegrees();
 
     SmartDashboard.putNumber("MX", mx);
-    SmartDashboard.putNumber("MY", mx);
-    SmartDashboard.putNumber("MTHETA", mx);
+    SmartDashboard.putNumber("MY", my);
+    SmartDashboard.putNumber("MTHETA", mtheta);
 
-    
+    double ox = drivetrain.getEstimatedPose().getX();
+    double oy = drivetrain.getEstimatedPose().getY();
+    double otheta = drivetrain.getEstimatedPose().getRotation().getDegrees();
 
-
-    
+    SmartDashboard.putNumber("OX", ox);
+    SmartDashboard.putNumber("OY", oy);
+    SmartDashboard.putNumber("OTHETA", otheta);
 
     SmartDashboard.putBoolean("CANRange", intake.hasObject());
     CommandScheduler.getInstance().run();
+
+    SmartDashboard.putNumber("arm", arm.getTicks());
+    SmartDashboard.putNumber("el", elevator.getTicks());
+
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

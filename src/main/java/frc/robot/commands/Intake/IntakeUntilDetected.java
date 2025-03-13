@@ -22,14 +22,19 @@ public class IntakeUntilDetected extends Command {
     }
 
     public boolean isFinished() {
-        return intake.hasObject();
+        double initialTime =  Timer.getFPGATimestamp();
+        while (intake.hasObject()) {
+            continue;
+        }
+        
+        return intake.hasObject() && Timer.getFPGATimestamp()-initialTime >= 0.1;
     }
 
     public void end(boolean interrupted) {
-        double startTime = Timer.getFPGATimestamp();
-        while(Math.abs(Timer.getFPGATimestamp()-startTime) < 0.15) {
-            intake.setIntakeSpeed(-0.2);
-        }
+        // double startTime = Timer.getFPGATimestamp();
+        // while(Math.abs(Timer.getFPGATimestamp()-startTime) < 0.15) {
+        //     intake.setIntakeSpeed(-0.2);
+        // }
         intake.setIntakeSpeed(0);
     }
 }

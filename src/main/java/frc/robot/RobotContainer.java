@@ -116,9 +116,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * drivetrain.swerveDampingFactor(0.1)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * drivetrain.swerveDampingFactor(0.1)) // Drive left with negative X (left)
-                    .withRotationalRate(joystick.getRightX() * MaxAngularRate * drivetrain.swerveDampingFactor(0.1)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -143,7 +143,7 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        joystick.y().whileTrue(new AlignCommand(m_Vision, drivetrain,0.35,0));
+        joystick.y().onTrue(new SequentialCommandGroup(new AlignCommand(m_Vision, drivetrain,3.7,0)));
         //joystick.y().onTrue(drivetrain.driveToTag());
         // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -168,7 +168,14 @@ public class RobotContainer {
         // Set Positions (Elevator)
         // operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
         operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
-        operatorY.onTrue(new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));
+        operatorY.onTrue(new SequentialCommandGroup(
+            new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
+            new ArmSetPosition(elevator, arm, 7)
+        ));
+        operatorA.onTrue(new SequentialCommandGroup(
+            new ElevatorSetPosition(elevator, arm, 0), 
+            new ArmSetPosition(elevator, arm, 0)
+        ));
         
 
     }
