@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LA", ta);
 
     double mx = drivetrain.fetchPoseM2().getX();
-    double my = drivetrain.fetchPoseM2().getX();
+    double my = drivetrain.fetchPoseM2().getY();
     double mtheta = drivetrain.fetchPoseM2().getRotation().getDegrees();
 
     SmartDashboard.putNumber("MX", mx);

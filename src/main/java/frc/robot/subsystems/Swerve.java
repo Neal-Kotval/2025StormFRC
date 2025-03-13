@@ -94,7 +94,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     this.getState().ModulePositions, 
     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
     VecBuilder.fill(0.1, 0.1, 0.1),
-    VecBuilder.fill(0.1, 0.1, 100));
+    VecBuilder.fill(0.7, 0.7,9999999));
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
@@ -230,7 +230,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
         m_odometry.updateWithTime(Timer.getFPGATimestamp(), m_gyro.getRotation2d(), this.getState().ModulePositions);
-        //m_odometry.addVisionMeasurement(getEasyPose(1, 3, 0), Timer.getFPGATimestamp()-0.02);
+        m_odometry.addVisionMeasurement(getEasyPose(1, 3, 0), Timer.getFPGATimestamp());
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -276,34 +276,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         
     }
 
-    public Command driveToTag() {
-        LimelightHelpers.setPipelineIndex("limelight", 0);
-
-        int[] validIDs = {6,7,8,9,10,11,17,18,19,20,21,22};
-        LimelightHelpers.SetFiducialIDFiltersOverride("limelight", validIDs);
-
-        boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation("limelight", m_gyro.getYaw().getValueAsDouble(), 0,
-                0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if (Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                            // vision updates
-        {
-            doRejectUpdate = true;
-        }
-        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
-
-        if (mt2.tagCount <= 0) {
-            doRejectUpdate = true;
-        }
-        
-        System.out.println("Updating, " + mt2.tagCount);
-        if (!doRejectUpdate) {
-            return createDriveToPose(mt2.pose);
-        }
-        return (createDriveToPose(this.getState().Pose));
-    }
-
     public double swerveDampingFactor(double maxDamp) {
         double currTicks;
         currTicks = m_elevator.getTicks();
@@ -337,18 +309,15 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         {
             doRejectUpdate = true;
         }
-        //System.out.print(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()));
 
         if (mt2.tagCount <= 0) {
             doRejectUpdate = true;
         }
         
         if (!doRejectUpdate) {
-            // odometry.setVisionMeasurementStdDevs(VecBuilder.fill(2,2,2.0*PoseConstants.kVisionStdDevTheta));
-            // m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
             m_odometry.addVisionMeasurement(
                     mt2.pose,
-                    Utils.fpgaToCurrentTime(mt2.timestampSeconds));
+                    Timer.getFPGATimestamp());
             
             System.out.println("m_odometry, " + m_odometry.getEstimatedPosition().getX() + ", " + m_odometry.getEstimatedPosition().getY());
         }
