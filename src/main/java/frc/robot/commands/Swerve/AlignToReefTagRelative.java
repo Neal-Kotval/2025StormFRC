@@ -45,15 +45,15 @@ public class AlignToReefTagRelative extends Command {
     yController.setSetpoint(isRightScore ? Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT : -Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT);
     yController.setTolerance(Constants.AutoConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("");
+    tagID = LimelightHelpers.getFiducialID("limelight");
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("") && LimelightHelpers.getFiducialID("") == tagID) {
+    if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
 
       double xSpeed = xController.calculate(postions[2]);

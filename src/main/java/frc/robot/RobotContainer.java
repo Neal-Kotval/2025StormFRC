@@ -36,10 +36,12 @@ import frc.robot.commands.Intake.IntakeUntilDetected;
 import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.TimedIntake;
 import frc.robot.commands.Swerve.AlignCommand;
+import frc.robot.commands.Swerve.AlignToReefTagRelative;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SysId.SwerveDriveSysId;
+import frc.robot.commands.Swerve.SeekUnseen;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -128,6 +130,7 @@ public class RobotContainer {
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
+        joystick.rightBumper().onTrue(new SeekUnseen(drivetrain));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -143,14 +146,21 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-        joystick.y().onTrue(new SequentialCommandGroup(new AlignCommand(m_Vision, drivetrain,3.7,0)));
-        //joystick.y().onTrue(drivetrain.driveToTag());
-        // joystick.povUp().whileTrue(drivetrain.createDriveToPose(new Pose2d(new Translation2d(drivetrain.getState().Pose.getX()+0.1, drivetrain.getState().Pose.getY()))));
+
+        joystick.y().onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(true, drivetrain),
+            new SequentialCommandGroup(
+                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(elevator, arm, 7)
+            ),
+            new TimedSwerve(drivetrain, 0.2, 1, 0)
+        ));
+        
         drivetrain.registerTelemetry(logger::telemeterize);
 
         leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
         leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
-        padLeft.onTrue(new IntakeUntilDetected(intake, -0.7));
+        padLeft.onTrue(new IntakeUntilDetected(intake, -0.5));
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
         padDown.whileTrue(new MoveElevator(elevator, arm, -0.15));

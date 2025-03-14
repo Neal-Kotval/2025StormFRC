@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,6 +21,8 @@ public class Arm extends SubsystemBase {
     private final TalonFX armMotor;
     // Create a PositionVoltage control request (using slot 0 for PID gains).
     private final PositionVoltage positionControl = new PositionVoltage(0);
+    private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    MotionMagicConfigs motionMagicConfigs;
 
     // PID gains for closed-loop position control (tune these values for your mechanism)
     private static final double kP = 2.0;
@@ -43,6 +47,10 @@ public class Arm extends SubsystemBase {
         config.Slot0.kI = kI;
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
+        motionMagicConfigs = config.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 5; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 500; // Target jerk of 1600 rps/s/s (0.1 seconds)
         armMotor.getConfigurator().apply(config);
         armMotor.setNeutralMode(NeutralModeValue.Brake);
         armMotor.setPosition(0);
@@ -53,7 +61,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void setArmPositionTicks(double ticks) {
-        armMotor.setControl(positionControl.withPosition(ticks));
+        armMotor.setControl(m_request.withPosition(ticks));
         //armMotor.setControl();
     }
 

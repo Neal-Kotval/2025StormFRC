@@ -149,34 +149,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         )
     );
 
-    /*
-     * SysId routine for characterizing rotation.
-     * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
-     */
-    // private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
-    //     new SysIdRoutine.Config(
-    //         /* This is in radians per second², but SysId only supports "volts per second" */
-    //         Volts.of(Math.PI / 6).per(Second),
-    //         /* This is in radians per second, but SysId only supports "volts" */
-    //         Volts.of(Math.PI),
-    //         null, // Use default timeout (10 s)
-    //         // Log state with SignalLogger class
-    //         state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
-    //     ),
-    //     new SysIdRoutine.Mechanism(
-    //         output -> {
-    //             /* output is actually radians per second, but SysId only supports "volts" */
-    //             setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-    //             /* also log the requested output for SysId */
-    //             SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-    //         },
-    //         null,
-    //         this
-    //     )
-    // );
-
-    /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
     public Swerve(
@@ -188,6 +160,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             startSimThread();
         }
         configurePathPlanner();
+        m_odometry.resetPosition(m_gyro.getRotation2d(), this.getState().ModulePositions, this.getState().Pose);
     }
 
     public Swerve(
@@ -199,6 +172,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        m_odometry.resetPosition(m_gyro.getRotation2d(), this.getState().ModulePositions, this.getState().Pose);
     }
 
     public Swerve(
@@ -213,6 +187,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             startSimThread();
         }
         configurePathPlanner();
+        m_odometry.resetPosition(m_gyro.getRotation2d(), this.getState().ModulePositions, this.getState().Pose);
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -229,8 +204,15 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
+        SwerveModulePosition[] mp = this.getState().ModulePositions;
+        double d1 = mp[0].distanceMeters;
+        double d2 = mp[1].distanceMeters;
+        double d3 = mp[2].distanceMeters;
+        double d4 = mp[3].distanceMeters;
+        double[] ds = {d1, d2, d3, d4};
+        SmartDashboard.putNumberArray("Module Distances", ds);
+
         m_odometry.updateWithTime(Timer.getFPGATimestamp(), m_gyro.getRotation2d(), this.getState().ModulePositions);
-        m_odometry.addVisionMeasurement(getEasyPose(1, 3, 0), Timer.getFPGATimestamp());
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
