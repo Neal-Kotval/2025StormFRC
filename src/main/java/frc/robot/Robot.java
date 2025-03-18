@@ -67,10 +67,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Y-Coord", y);
     SmartDashboard.putNumber("Theta-Coord", theta);
 
-    tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+    tv = NetworkTableInstance.getDefault().getTable("limelight-shitty").getEntry("tv").getDouble(0);
+    tx = NetworkTableInstance.getDefault().getTable("limelight-shitty").getEntry("tx").getDouble(0);
+    ty = NetworkTableInstance.getDefault().getTable("limelight-shitty").getEntry("ty").getDouble(0);
+    ta = NetworkTableInstance.getDefault().getTable("limelight-shitty").getEntry("ta").getDouble(0);
 
     SmartDashboard.putNumber("LX", tx);
     SmartDashboard.putNumber("LY", ty);

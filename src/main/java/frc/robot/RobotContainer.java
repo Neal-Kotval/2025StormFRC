@@ -37,6 +37,7 @@ import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.TimedIntake;
 import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.commands.Swerve.AlignToReefTagRelative;
+import frc.robot.commands.Swerve.AlignToSource;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -147,7 +148,8 @@ public class RobotContainer {
 
         //elevator.setDefaultCommand(new CurrentSetter(elevator));
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.a().whileTrue(new AlignToSource(false, drivetrain));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));

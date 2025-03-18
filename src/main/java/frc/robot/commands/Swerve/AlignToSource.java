@@ -45,18 +45,18 @@ public class AlignToSource extends Command {
     yController.setSetpoint(0);
     yController.setTolerance(Constants.AutoConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("limelight");
+    tagID = LimelightHelpers.getFiducialID("limelight-shitty");
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
+    if (LimelightHelpers.getTV("limelight-shitty") && LimelightHelpers.getFiducialID("limelight-shitty") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-shitty");
       SmartDashboard.putNumber("x", postions[2]);
 
-      double xSpeed = xController.calculate(postions[2]);
+      double xSpeed = -xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspee", xSpeed);
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);

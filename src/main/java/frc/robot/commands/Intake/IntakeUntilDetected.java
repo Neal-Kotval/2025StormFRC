@@ -28,7 +28,7 @@ public class IntakeUntilDetected extends Command {
 
     public void end(boolean interrupted) {
         double startTime = Timer.getFPGATimestamp();
-        while(Math.abs(Timer.getFPGATimestamp()-startTime) < 0.15) {
+        while(Math.abs(Timer.getFPGATimestamp()-startTime) < 0.23) {
             intake.setIntakeSpeed(-0.2);
         }
         intake.setIntakeSpeed(0);

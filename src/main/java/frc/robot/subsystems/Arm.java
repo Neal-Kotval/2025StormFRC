@@ -50,9 +50,9 @@ public class Arm extends SubsystemBase {
         config.Slot0.kG = kG;
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motionMagicConfigs = config.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 5; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 500; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 7.5; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 75; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 750; // Target jerk of 1600 rps/s/s (0.1 seconds)
         armMotor.getConfigurator().apply(config);
         armMotor.setNeutralMode(NeutralModeValue.Brake);
         armMotor.setPosition(0);
