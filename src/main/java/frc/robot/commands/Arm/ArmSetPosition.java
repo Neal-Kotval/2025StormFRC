@@ -32,6 +32,6 @@ public class ArmSetPosition extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    arm.setArmSpeed(0);
+    arm.setArmPositionDefault(arm.getTicks());
   }
 }

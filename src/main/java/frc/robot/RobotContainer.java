@@ -64,6 +64,7 @@ public class RobotContainer {
     private final Arm arm = new Arm();
     private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
+    private static int currentMode;
 
     //Operator
     public Trigger operatorY = new Trigger(joystick2.y());
@@ -88,11 +89,31 @@ public class RobotContainer {
         //NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
         NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
         NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
-        NamedCommands.registerCommand("intakeUntil", new IntakeUntilDetected(intake, -0.2));
         //NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
         NamedCommands.registerCommand("setL3", new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));
         NamedCommands.registerCommand("TimedIntake", new TimedIntake(intake,5,-0.5));
+        NamedCommands.registerCommand("VisionCoral",new SequentialCommandGroup(
+            new AlignToReefTagRelative(true, drivetrain),
+            //new TimedSwerve(drivetrain, 0.3, 1, 0),
+            new SequentialCommandGroup(
+                new ArmSetPosition(elevator, arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(elevator, arm, Constants.TickValues.L3ArmTicks)
+            ),
+            new TimedIntake(intake, 0.5, -0.7)
+        ));
+        NamedCommands.registerCommand("Retreat", new SequentialCommandGroup(
+            new ArmSetPosition(elevator, arm, Constants.TickValues.armSafetyTicks),
+            new SequentialCommandGroup(
+            new ElevatorSetPosition(elevator, arm, 0), 
+            new ArmSetPosition(elevator, arm, 0))
+        ));
+        NamedCommands.registerCommand("IntakeUntilDetected", new IntakeUntilDetected(intake, -0.7));
+        currentMode = 4;
 
+
+
+        //NamedCommands.registerCommand("ResetPose LeftCoral", drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 
         // Build an auto chooser. This will use Commands.none() as the default option.
@@ -147,19 +168,24 @@ public class RobotContainer {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
 
-        joystick.y().onTrue(new SequentialCommandGroup(
-            new AlignToReefTagRelative(true, drivetrain),
-            new SequentialCommandGroup(
-                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
-                new ArmSetPosition(elevator, arm, 7)
-            ),
-            new TimedSwerve(drivetrain, 0.2, 1, 0)
+        joystick.povLeft().onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(false, drivetrain),
+            new TimedSwerve(drivetrain, 0.3, 1, 0),
+            currentAction(getCurrentMode()),
+            new TimedIntake(intake, 0.5, -0.7)
         ));
         
+        joystick.povRight().onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(true, drivetrain),
+            new TimedSwerve(drivetrain, 0.3, 1, 0),
+            currentAction(getCurrentMode()),
+            new TimedIntake(intake, 0.5, -0.7)
+        ));
+
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.1));
-        leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.1));
+        leftYAxisActiveDown.whileTrue(new MoveArm(arm, -0.08));
+        leftYAxisActiveUp.whileTrue(new MoveArm(arm, 0.08));
         padLeft.onTrue(new IntakeUntilDetected(intake, -0.5));
 
         padUp.whileTrue(new MoveElevator(elevator, arm, 0.15));
@@ -177,11 +203,16 @@ public class RobotContainer {
 
         // Set Positions (Elevator)
         // operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
-        operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
-        operatorY.onTrue(new SequentialCommandGroup(
-            new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
-            new ArmSetPosition(elevator, arm, 7)
-        ));
+
+        operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
+        operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
+        operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
+
+        // operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
+        // operatorY.onTrue(new SequentialCommandGroup(
+        //     new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
+        //     new ArmSetPosition(elevator, arm, 7)
+        // ));
         operatorA.onTrue(new SequentialCommandGroup(
             new ElevatorSetPosition(elevator, arm, 0), 
             new ArmSetPosition(elevator, arm, 0)
@@ -200,5 +231,37 @@ public class RobotContainer {
         debugTab.add(m_swerveSysId.createSteerSysIdCommand().withName("Steer sysid"));
         debugTab.add(m_swerveSysId.createRotationSysIdCommand().withName("Rotation sysid"));
 
+    }
+
+    public SequentialCommandGroup currentAction(int mode) {
+        System.out.println(mode);
+        if (mode == 4) {
+            return new SequentialCommandGroup(
+                new ArmSetPosition(elevator, arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(elevator, arm, Constants.TickValues.L3ArmTicks)
+            );
+        }
+        
+        if (mode == 3) {
+            return new SequentialCommandGroup(
+                new ArmSetPosition(elevator, arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks) 
+            );
+        }
+        
+        if (mode == 2) {
+            return new SequentialCommandGroup(
+                new ArmSetPosition(elevator, arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks) 
+            );
+        }
+
+        return new SequentialCommandGroup(
+        );
+    }
+
+    public static int getCurrentMode() {
+        return currentMode;
     }
 }

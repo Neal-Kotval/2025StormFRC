@@ -9,6 +9,48 @@
           "data": {
             "pathName": "left"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Retreat"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeUntilDetected"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "left intake forward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Retreat"
+          }
         }
       ]
     }

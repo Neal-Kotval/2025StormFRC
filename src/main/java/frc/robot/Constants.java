@@ -35,9 +35,9 @@ public final class Constants {
 
     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0;  // Rotation
     public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
-    public static final double X_SETPOINT_REEF_ALIGNMENT = -0.38;  // Vertical pose
+    public static final double X_SETPOINT_REEF_ALIGNMENT = -0;  // Vertical pose
     public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.02;
-    public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.16;  // Horizontal pose
+    public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.16+0.05;  // Horizontal pose
     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.02;
 
     public static final double DONT_SEE_TAG_WAIT_TIME = 1;
@@ -72,7 +72,7 @@ public final class Constants {
   }
 
   public static class CANids {
-    public static final int armMotor = 2;
+    public static final int armMotor = 10;
     public static final int intakeMotor = 6;
     public static final int elevatorRightMotor = 4;
     public static final int elevatorLeftMotor = 5;
@@ -81,8 +81,9 @@ public final class Constants {
   }
 
   public static class TickValues {
-    public static final double armSafetyTicks = 3.77;
+    public static final double armSafetyTicks = 0.75;
     public static final double elevatorSafetyTicks = 0.66;
+    public static final double L3ArmTicks = 2.65;
     public static final double L1ElevatorTicks = 9.5;
     public static final double L2ElevatorTicks = 22.40;
     public static final double L3ElevatorTicks = 42.36;

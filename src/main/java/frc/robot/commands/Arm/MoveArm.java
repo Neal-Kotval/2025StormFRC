@@ -30,6 +30,7 @@ public class MoveArm extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    arm.stopArm();
+    double currentTicks = arm.getTicks();
+    arm.setArmPositionDefault(currentTicks);
   }
 }

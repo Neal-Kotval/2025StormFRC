@@ -9,6 +9,12 @@
           "data": {
             "pathName": "middle"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionCoral"
+          }
         }
       ]
     }

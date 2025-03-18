@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -28,7 +29,7 @@ public class Arm extends SubsystemBase {
     private static final double kP = 2.0;
     private static final double kI = 0.0;
     private static final double kD = 0.1;
-    private static final double kG = 0.05;
+    private static final double kG = 0;
 
     // Conversion constants:
     // The Falcon 500's integrated encoder produces 2048 ticks per revolution.
@@ -47,6 +48,7 @@ public class Arm extends SubsystemBase {
         config.Slot0.kI = kI;
         config.Slot0.kD = kD;
         config.Slot0.kG = kG;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motionMagicConfigs = config.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = 5; // Target cruise velocity of 80 rps
         motionMagicConfigs.MotionMagicAcceleration = 50; // Target acceleration of 160 rps/s (0.5 seconds)
@@ -65,26 +67,13 @@ public class Arm extends SubsystemBase {
         //armMotor.setControl();
     }
 
-    /**
-     * Determines if the elevator has reached the target position.
-     * @param targetRotations The desired target position (in rotations).
-     * @return true if the current position is within tolerance; false otherwise.
-     */
-    public boolean atTargetPosition(double targetRotations) {
-        double targetTicks = (targetRotations / GEAR_RATIO) * TICKS_PER_REV;
-        double currentTicks = armMotor.getPosition().getValueAsDouble();
-        return Math.abs(currentTicks - targetTicks) < TOLERANCE_TICKS;
-    }
-
     public void setEncoder(double pos) {
         armMotor.setPosition(pos);
     }
 
-    /**
-     * Stops the elevator by setting the motor output to zero.
-     */
-    public void stopArm() {
-        armMotor.set(0);
+    public void setArmPositionDefault(double rotations) {
+        PositionVoltage positionVoltage = new PositionVoltage(0);
+        armMotor.setControl(positionVoltage.withPosition(rotations));
     }
 
     public void setArmSpeed(double speed) {
