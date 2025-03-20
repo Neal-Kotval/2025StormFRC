@@ -72,6 +72,53 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
+        new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+                null, // Use default timeout (10 s)
+                // Log state with SignalLogger class
+                state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
+        new SysIdRoutine.Mechanism(
+                output -> setControl(m_translationCharacterization.withVolts(output)),
+                null,
+                this));
+
+    private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
+        new SysIdRoutine.Config(
+                null, // Use default ramp rate (1 V/s)
+                Volts.of(7), // Use dynamic voltage of 7 V
+                null, // Use default timeout (10 s)
+                // Log state with SignalLogger class
+                state -> SignalLogger.writeString("SysIdSteer_State", state.toString())),
+        new SysIdRoutine.Mechanism(
+                volts -> setControl(m_steerCharacterization.withVolts(volts)),
+                null,
+                this));
+
+    private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
+        new SysIdRoutine.Config(
+                /* This is in radians per second², but SysId only supports "volts per second" */
+                Volts.of(Math.PI / 6).per(Second),
+                /* This is in radians per second, but SysId only supports "volts" */
+                Volts.of(Math.PI),
+                null, // Use default timeout (10 s)
+                // Log state with SignalLogger class
+                state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),
+        new SysIdRoutine.Mechanism(
+                output -> {
+                    /* output is actually radians per second, but SysId only supports "volts" */
+                    setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
+                    /* also log the requested output for SysId */
+                    SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
+                },
+                null,
+                this));
+
+    
+
+    /* Setting up odometry */
     public final Translation2d zeroPose = new Translation2d(0,0);
 
     private final SwerveRequest.ApplyRobotSpeeds AutoRequest = new SwerveRequest.ApplyRobotSpeeds();
@@ -88,7 +135,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
     );
 
-
     SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
     m_kinematics, 
     m_gyro.getRotation2d(),
@@ -96,6 +142,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
     VecBuilder.fill(0.1, 0.1, 0.1),
     VecBuilder.fill(0.7, 0.7,9999999));
+
     private void configurePathPlanner() {
         try{
             config = RobotConfig.fromGUISettings();
@@ -117,38 +164,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 e.printStackTrace();
         }
     }
-
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
-    private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> setControl(m_translationCharacterization.withVolts(output)),
-            null,
-            this
-        )
-    );
-
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
-    private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(7), // Use dynamic voltage of 7 V
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            volts -> setControl(m_steerCharacterization.withVolts(volts)),
-            null,
-            this
-        )
-    );
 
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
@@ -344,5 +359,29 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     public Pose2d getEasyPose(double x, double y, double theta) {
         return new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(theta)));
+    }
+
+    public Command sysIdQuasistaticTranslation(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineTranslation.quasistatic(direction);
+    }
+
+    public Command sysIdDynamicTranslation(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineTranslation.dynamic(direction);
+    }
+
+    public Command sysIdQuasistaticSteer(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineSteer.quasistatic(direction);
+    }
+
+    public Command sysIdDynamicSteer(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineSteer.dynamic(direction);
+    }
+
+    public Command sysIdQuasistaticRotation(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineRotation.quasistatic(direction);
+    }
+
+    public Command sysIdDynamicRotation(SysIdRoutine.Direction direction) {
+        return m_sysIdRoutineRotation.dynamic(direction);
     }
 }
