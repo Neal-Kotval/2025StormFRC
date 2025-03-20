@@ -35,7 +35,6 @@ import frc.robot.commands.Elevator.MoveElevator;
 import frc.robot.commands.Intake.IntakeUntilDetected;
 import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.TimedIntake;
-import frc.robot.commands.Swerve.AlignCommand;
 import frc.robot.commands.Swerve.AlignToReefTagRelative;
 import frc.robot.commands.Swerve.AlignToSource;
 import frc.robot.commands.Swerve.TimedSwerve;
@@ -88,7 +87,6 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks));
         //NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
-        NamedCommands.registerCommand("driveToTag", new AlignCommand(m_Vision, drivetrain, 0.35, 0));
         NamedCommands.registerCommand("AlignCoral", new TimedSwerve(drivetrain, 2.5, 0.1, 0.1));
         //NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
         NamedCommands.registerCommand("setL3", new SequentialCommandGroup(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(elevator, arm, 7)));

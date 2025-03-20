@@ -24,6 +24,7 @@ import static edu.wpi.first.units.Units.Meters;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
@@ -35,8 +36,10 @@ public final class Constants {
 
     public static final double ROT_SETPOINT_REEF_ALIGNMENT = 0;  // Rotation
     public static final double ROT_TOLERANCE_REEF_ALIGNMENT = 1;
+
     public static final double X_SETPOINT_REEF_ALIGNMENT = -0;  // Vertical pose
     public static final double X_TOLERANCE_REEF_ALIGNMENT = 0.02;
+
     public static final double Y_SETPOINT_REEF_ALIGNMENT = 0.16+0.05;  // Horizontal pose
     public static final double Y_TOLERANCE_REEF_ALIGNMENT = 0.02;
 
@@ -78,6 +81,10 @@ public final class Constants {
     public static final int elevatorLeftMotor = 5;
     public static final int gyro = 0;
     public static final int coralSensor = 25;
+  }
+
+  public static class PWMids {
+    public static final int climb = 0;
   }
 
   public static class TickValues {
