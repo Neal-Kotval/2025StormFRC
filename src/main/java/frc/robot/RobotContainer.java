@@ -206,9 +206,10 @@ public class RobotContainer {
         // Set Positions (Elevator)
         // operatorA.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L1ElevatorTicks));
 
-        operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
-        operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
-        operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
+        // operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
+        // operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
+        // operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
+        operatorB.onTrue(new InstantCommand(()->{se})
 
         // operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         // operatorY.onTrue(new SequentialCommandGroup(
@@ -234,6 +235,7 @@ public class RobotContainer {
         debugTab.add(m_swerveSysId.createRotationSysIdCommand().withName("Rotation sysid"));
 
     }
+
 
     public SequentialCommandGroup currentAction(int mode) {
         System.out.println(mode);

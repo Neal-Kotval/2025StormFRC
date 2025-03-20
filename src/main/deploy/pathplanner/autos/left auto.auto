@@ -23,9 +23,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "left intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "left intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Retreat"
+                }
+              }
+            ]
           }
         },
         {

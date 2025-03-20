@@ -28,6 +28,8 @@ public class Elevator extends SubsystemBase {
     private final TalonFX masterMotor;
     private final TalonFX followerMotor;
     MotionMagicConfigs motionMagicConfigs;
+    MotionMagicConfigs motionMagicConfigs2;
+    private final TalonFXConfiguration config;
 
     public Elevator() {
         masterMotor = new TalonFX(Constants.CANids.elevatorLeftMotor);
@@ -35,7 +37,7 @@ public class Elevator extends SubsystemBase {
         followerMotor.setControl(new Follower(Constants.CANids.elevatorLeftMotor, false));
 
         // Configure PID gains on the master using slot 0.
-        TalonFXConfiguration config = new TalonFXConfiguration();
+        config = new TalonFXConfiguration();
         config.Slot0.kP = ElevatorConstants.kP;
         config.Slot0.kI = ElevatorConstants.kI;
         config.Slot0.kD = ElevatorConstants.kD;
@@ -46,7 +48,6 @@ public class Elevator extends SubsystemBase {
         motionMagicConfigs.MotionMagicCruiseVelocity = 30; // Target cruise velocity of 80 rps
         motionMagicConfigs.MotionMagicAcceleration = 300; // Target acceleration of 160 rps/s (0.5 seconds)
         motionMagicConfigs.MotionMagicJerk = 3000; // Target jerk of 1600 rps/s/s (0.1 seconds)
-        // create a Motion Magic request, voltage output
 
         masterMotor.getConfigurator().apply(config);
         masterMotor.setNeutralMode(NeutralModeValue.Brake);

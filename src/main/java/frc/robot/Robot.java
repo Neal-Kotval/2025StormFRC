@@ -100,6 +100,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("el", elevator.getTicks());
 
     SmartDashboard.putNumber("MODE", RobotContainer.getCurrentMode());
+    SmartDashboard.putNumber("ArmPosRev", arm.getArmPosTicks());
 
 
   }

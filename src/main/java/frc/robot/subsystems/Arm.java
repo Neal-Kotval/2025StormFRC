@@ -8,6 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.*;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants;
 
 /**
@@ -24,7 +27,8 @@ public class Arm extends SubsystemBase {
     private final PositionVoltage positionControl = new PositionVoltage(0);
     private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     MotionMagicConfigs motionMagicConfigs;
-
+    private SparkMax motor = new SparkMax(0, MotorType.kBrushless);
+    private AbsoluteEncoder encoder = motor.getAbsoluteEncoder();
     // PID gains for closed-loop position control (tune these values for your mechanism)
     private static final double kP = 2.0;
     private static final double kI = 0.0;
@@ -78,5 +82,9 @@ public class Arm extends SubsystemBase {
 
     public void setArmSpeed(double speed) {
         armMotor.set(speed);
+    }
+    public double getArmPosTicks(){
+        return encoder.getPosition();
+
     }
 }
