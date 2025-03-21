@@ -7,8 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
-
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Sheet;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.Vision;
+import frc.robot.generated.TunerConstants;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.signals.UpdateModeValue;
 
@@ -26,6 +32,16 @@ import static edu.wpi.first.units.Units.Meters;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  /* Subsystem constants to ensure singleton */
+  public class Subsystems {
+    public static final Arm S_ARM = new Arm();
+    public static final Intake S_INTAKE = new Intake();
+    public static final Swerve S_SWERVE = TunerConstants.createDrivetrain();
+    public static final Sheet S_SHEET = new Sheet();
+    public static final Vision S_VISION = new Vision();
+    public static final Elevator S_ELEVATOR = new Elevator();
+  }
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -88,7 +104,7 @@ public final class Constants {
   }
 
   public static class PWMids {
-    public static final int climb = 7;
+    public static final int sheet = 0;
   }
 
   public static class TickValues {
