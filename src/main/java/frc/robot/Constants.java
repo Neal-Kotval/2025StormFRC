@@ -84,7 +84,7 @@ public final class Constants {
   }
 
   public static class PWMids {
-    public static final int climb = 0;
+    public static final int sheet = 0;
   }
 
   public static class TickValues {

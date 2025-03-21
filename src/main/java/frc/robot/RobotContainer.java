@@ -65,6 +65,7 @@ public class RobotContainer {
     private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
     private static int currentMode;
+    private final Sheet sheet = new Sheet();
 
     //Operator
     public Trigger operatorY = new Trigger(joystick2.y());
@@ -207,7 +208,7 @@ public class RobotContainer {
         // operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
         // operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
         // operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
-        operatorB.onTrue(new InstantCommand(()->{se})
+        operatorB.onTrue(new InstantCommand(()->{sheet.setSheetSpeed(0.1);}));
 
         // operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         // operatorY.onTrue(new SequentialCommandGroup(

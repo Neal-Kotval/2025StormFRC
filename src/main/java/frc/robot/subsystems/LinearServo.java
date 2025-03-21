@@ -21,7 +21,7 @@ public class LinearServo extends Servo {
      * @param speed max speed of the servo [mm/second]
      */
     public LinearServo(int length, int speed) {
-        super(Constants.PWMids.climb);
+        super(Constants.PWMids.sheet);
         m_length = length;
         m_speed = speed;
     }
