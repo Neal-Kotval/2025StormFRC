@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.MoveClimb;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Elevator.CurrentSetter;
 import frc.robot.commands.Elevator.ElevatorSetPosition;
@@ -61,9 +62,10 @@ public class RobotContainer {
     public final Swerve drivetrain = TunerConstants.createDrivetrain();
     private final SendableChooser<Command> autoChooser;
     private final SwerveDriveSysId m_swerveSysId;
-    private final Arm arm = new Arm();
+    private final Arm arm = Constants.arm;
     private final Elevator elevator = new Elevator();
     private final Intake intake = new Intake();
+    private final Climb climb = new Climb();
     private static int currentMode;
 
     //Operator
@@ -207,7 +209,7 @@ public class RobotContainer {
         // operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
         // operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
         // operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
-        operatorB.onTrue(new InstantCommand(()->{se})
+        operatorB.onTrue(new MoveClimb(climb, 0.2));
 
         // operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         // operatorY.onTrue(new SequentialCommandGroup(

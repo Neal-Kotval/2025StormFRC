@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 
-public class LinearServo extends Servo {
+public class LinearServo extends Servo{
 
     double m_speed;
     double m_length;
@@ -13,15 +13,8 @@ public class LinearServo extends Servo {
     double curPos;
     PWM pwm;
 
-    /**
-     * Parameters for L16-R Actuonix Linear Actuators
-     *
-     * @param channel PWM channel used to control the servo
-     * @param length max length of the servo [mm]
-     * @param speed max speed of the servo [mm/second]
-     */
-    public LinearServo(int length, int speed) {
-        super(Constants.PWMids.climb);
+    public LinearServo(int id, int length, int speed) {
+        super(id);
         m_length = length;
         m_speed = speed;
     }
@@ -31,7 +24,8 @@ public class LinearServo extends Servo {
         setSpeed((setPos/m_length *2)-1);
     }
 
-    public void periodic() {
+    public void setLinearSpeed(double speed ){
+        setSpeed(speed);
     }
 
     double lastTime = 0;

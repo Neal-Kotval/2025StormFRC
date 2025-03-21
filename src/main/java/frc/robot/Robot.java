@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
   //public final Swerve drivetrain = TunerConstants.createDrivetrain();
-  public final Arm arm = new Arm();
+  public final Arm arm = Constants.arm;
   public final Elevator elevator = new Elevator();
   public final Intake intake = new Intake();
   public final Swerve drivetrain = TunerConstants.createDrivetrain();

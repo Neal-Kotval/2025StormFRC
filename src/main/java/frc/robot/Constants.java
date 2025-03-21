@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.subsystems.Arm;
+
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.signals.UpdateModeValue;
 
@@ -29,6 +31,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static final Arm arm = new Arm();
+  
   public static final class AutoConstants {
     public static final double X_REEF_ALIGNMENT_P = 3.3;
     public static final double Y_REEF_ALIGNMENT_P = 3.3;
@@ -84,7 +88,7 @@ public final class Constants {
   }
 
   public static class PWMids {
-    public static final int climb = 0;
+    public static final int climb = 7;
   }
 
   public static class TickValues {
