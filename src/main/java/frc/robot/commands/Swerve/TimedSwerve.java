@@ -15,13 +15,15 @@ public class TimedSwerve extends Command {
     private double initialTime;
     private final double xVelocity;
     private final double yVelocity;
+    private final double tVelocity;
     private final SwerveRequest.RobotCentric alignRequest;
 
-    public TimedSwerve(Swerve swerve, double duration, double xVelocity, double yVelocity) {
+    public TimedSwerve(Swerve swerve, double duration, double xVelocity, double yVelocity, double tVelocity) {
         this.swerve = swerve;
         this.duration = duration;
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
+        this.tVelocity = tVelocity;
 
         alignRequest = new SwerveRequest.RobotCentric()
             .withDeadband(0.1)
@@ -45,7 +47,7 @@ public class TimedSwerve extends Command {
         SwerveRequest.RobotCentric moveRequest = alignRequest
             .withVelocityX(xVelocity)
             .withVelocityY(yVelocity)
-            .withRotationalRate(0);
+            .withRotationalRate(tVelocity);
 
         swerve.setControl(moveRequest);
     }

@@ -13,13 +13,13 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 
-public class AlignToSource extends Command {
+public class AlignToAlgae extends Command {
   private PIDController xController, yController, rotController;
   private Timer dontSeeTagTimer, stopTimer;
   private Swerve drivebase;
   private double tagID = -1;
 
-  public  AlignToSource(Swerve drivebase) {
+  public AlignToAlgae(Swerve drivebase) {
     xController = new PIDController(Constants.AutoConstants.X_REEF_ALIGNMENT_P, 0.0, 0);  // Vertical movement
     yController = new PIDController(Constants.AutoConstants.Y_REEF_ALIGNMENT_P, 0.0, 0);  // Horitontal movement
     rotController = new PIDController(Constants.AutoConstants.ROT_REEF_ALIGNMENT_P, 0, 0);  // Rotation
@@ -43,18 +43,18 @@ public class AlignToSource extends Command {
     yController.setSetpoint(0);
     yController.setTolerance(Constants.AutoConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
-    tagID = LimelightHelpers.getFiducialID("limelight-shitty");
+    tagID = LimelightHelpers.getFiducialID("limelight");
   }
 
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("limelight-shitty") && LimelightHelpers.getFiducialID("limelight-shitty") == tagID) {
+    if (LimelightHelpers.getTV("limelight") && LimelightHelpers.getFiducialID("limelight") == tagID) {
       this.dontSeeTagTimer.reset();
 
-      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight-shitty");
+      double[] postions = LimelightHelpers.getBotPose_TargetSpace("limelight");
       SmartDashboard.putNumber("x", postions[2]);
 
-      double xSpeed = -xController.calculate(postions[2]);
+      double xSpeed = xController.calculate(postions[2]);
       SmartDashboard.putNumber("xspee", xSpeed);
       double ySpeed = -yController.calculate(postions[0]);
       double rotValue = -rotController.calculate(postions[4]);

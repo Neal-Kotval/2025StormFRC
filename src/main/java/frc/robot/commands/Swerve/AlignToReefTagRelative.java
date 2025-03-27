@@ -42,7 +42,7 @@ public class AlignToReefTagRelative extends Command {
     xController.setSetpoint(Constants.AutoConstants.X_SETPOINT_REEF_ALIGNMENT);
     xController.setTolerance(Constants.AutoConstants.X_TOLERANCE_REEF_ALIGNMENT);
 
-    yController.setSetpoint(isRightScore ? Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT : -Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT);
+    yController.setSetpoint(isRightScore ? Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT+0.1 : -Constants.AutoConstants.Y_SETPOINT_REEF_ALIGNMENT);
     yController.setTolerance(Constants.AutoConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
     tagID = LimelightHelpers.getFiducialID("limelight");

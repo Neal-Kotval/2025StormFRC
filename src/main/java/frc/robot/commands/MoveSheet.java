@@ -3,14 +3,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 
 
-public class MoveClimb extends Command {
-  private final Climb climb;
+public class MoveSheet extends Command {
+  private final Sheet sheet;
   private final double power;
 
-  public MoveClimb(Climb climb, double power) {
-    this.climb = climb;
+  public MoveSheet(Sheet sheet, double power) {
+    this.sheet = sheet;
     this.power = power;
-    addRequirements(climb);
+    //addRequirements(sheet);
   }
 
   @Override
@@ -20,7 +20,7 @@ public class MoveClimb extends Command {
 
   @Override
   public void execute() {
-    climb.setServoSpeed(power);
+    sheet.setSheetSpeed(power);
   }
 
   @Override
@@ -30,6 +30,6 @@ public class MoveClimb extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    climb.setServoSpeed(0);
+    sheet.setSheetSpeed(0);
   }
 }

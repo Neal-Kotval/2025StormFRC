@@ -20,12 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.MoveClimb;
+import frc.robot.commands.MoveSheet;
 import frc.robot.commands.Arm.*;
 import frc.robot.commands.Elevator.CurrentSetter;
 import frc.robot.commands.Elevator.ElevatorSetPosition;
@@ -35,6 +36,7 @@ import frc.robot.commands.Intake.MoveIntake;
 import frc.robot.commands.Intake.TimedIntake;
 import frc.robot.commands.Swerve.AlignToReefTagRelative;
 import frc.robot.commands.Swerve.AlignToSource;
+import frc.robot.commands.Swerve.AlignToAlgae;
 import frc.robot.commands.Swerve.TimedSwerve;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.*;
@@ -58,7 +60,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController joystick2 = new CommandXboxController(1);
 
-    public final Swerve m_swerve = Constants.Subsystems.S_SWERVE;
+    public final Swerve m_swerve = TunerConstants.createDrivetrain();
     private final Arm m_arm = Constants.Subsystems.S_ARM;
     private final Elevator m_elevator = new Elevator();
     private final Intake m_intake = Constants.Subsystems.S_INTAKE;
@@ -86,13 +88,21 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("setL4", new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks));
         //NamedCommands.registerCommand("poseEstimate", new InstantCommand(()->drivetrain.setTranslationToVision()));
-        NamedCommands.registerCommand("AlignCoral", new TimedSwerve(m_swerve, 2.5, 0.1, 0.1));
+        NamedCommands.registerCommand("AlignCoral", new TimedSwerve(m_swerve, 2.5, 0.1, 0.1, 0));
         //NamedCommands.registerCommand("driveToB1",  drivetrain.createDriveToPose(7.960,6.608,-135.000));
         NamedCommands.registerCommand("setL3", new SequentialCommandGroup(new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks), new ArmSetPosition(m_elevator, m_arm, 7)));
         NamedCommands.registerCommand("TimedIntake", new TimedIntake(m_intake,5,-0.5));
         NamedCommands.registerCommand("VisionCoral",new SequentialCommandGroup(
             new AlignToReefTagRelative(true, m_swerve),
-            //new TimedSwerve(drivetrain, 0.3, 1, 0),
+            new SequentialCommandGroup(
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.L3ArmTicks)
+            ),
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        NamedCommands.registerCommand("VisionCoralLeft",new SequentialCommandGroup(
+            new AlignToReefTagRelative(false, m_swerve),
             new SequentialCommandGroup(
                 new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
                 new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks), 
@@ -146,11 +156,11 @@ public class RobotContainer {
         //elevator.setDefaultCommand(new CurrentSetter(elevator));
 
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.a().whileTrue(new AlignToSource(false, m_swerve));
+        //joystick.a().whileTrue(new AlignToSource(false, m_swerve));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
-        joystick.rightBumper().onTrue(new SeekUnseen(m_swerve));
+        //joystick.rightBumper().onTrue(new SeekUnseen(m_swerve));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -166,20 +176,57 @@ public class RobotContainer {
         // if (Utils.isSimulation()) {
         //     drivetrain.resetPose(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
         // }
-
-        joystick.povLeft().onTrue(new SequentialCommandGroup(
-            new AlignToReefTagRelative(false, m_swerve),
-            new TimedSwerve(m_swerve, 0.3, 1, 0),
-            currentAction(getCurrentMode()),
-            new TimedIntake(m_intake, 0.5, -0.7)
-        ));
         
-        joystick.povRight().onTrue(new SequentialCommandGroup(
+        joystick.povRight().and(joystick.y()).onTrue(new SequentialCommandGroup(
             new AlignToReefTagRelative(true, m_swerve),
-            new TimedSwerve(m_swerve, 0.3, 1, 0),
-            currentAction(getCurrentMode()),
+            new TimedSwerve(m_swerve, 0.2, 0.5, 0, 0),
+            new SequentialCommandGroup(
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.L3ArmTicks)
+            ),
             new TimedIntake(m_intake, 0.5, -0.7)
         ));
+        joystick.povLeft().and(joystick.y()).onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(false, m_swerve),
+            new TimedSwerve(m_swerve, 0.2, 0.5, 0, 0),
+            new SequentialCommandGroup(
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+                new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L3ElevatorTicks), 
+                new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.L3ArmTicks)
+            ),
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        joystick.povRight().and(joystick.b()).onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(true, m_swerve),
+            new TimedSwerve(m_swerve, 0.3, 1, 0, 0),
+            new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+            new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L2ElevatorTicks), 
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        joystick.povLeft().and(joystick.b()).onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(false, m_swerve),
+            new TimedSwerve(m_swerve, 0.3, 1, 0, 0),
+            new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+            new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L2ElevatorTicks), 
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        joystick.povRight().and(joystick.a()).onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(true, m_swerve),
+            new TimedSwerve(m_swerve, 0.3, 1, 0, 0),
+            new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+            new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L1ElevatorTicks), 
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        joystick.povLeft().and(joystick.a()).onTrue(new SequentialCommandGroup(
+            new AlignToReefTagRelative(false, m_swerve),
+            new TimedSwerve(m_swerve, 0.3, 1, 0, 0),
+            new ArmSetPosition(m_elevator, m_arm, Constants.TickValues.armSafetyTicks),
+            new ElevatorSetPosition(m_elevator, m_arm, Constants.TickValues.L1ElevatorTicks), 
+            new TimedIntake(m_intake, 0.5, -0.7)
+        ));
+        joystick.povUp().onTrue(new AlignToAlgae(m_swerve));
+        joystick.povDown().onTrue(new AlignToSource(m_swerve));
 
         m_swerve.registerTelemetry(logger::telemeterize);
 
@@ -206,7 +253,7 @@ public class RobotContainer {
         // operatorY.onTrue(new InstantCommand(() -> {currentMode = 4;}));
         // operatorB.onTrue(new InstantCommand(() -> {currentMode = 3;}));
         // operatorX.onTrue(new InstantCommand(() -> {currentMode = 2;}));
-        operatorB.onTrue(new InstantCommand(()->{m_sheet.setSheetSpeed(0.1);}));
+        operatorB.whileTrue(new MoveSheet(m_sheet, 0.5));
 
         // operatorX.onTrue(new ElevatorSetPosition(elevator, arm, Constants.TickValues.L2ElevatorTicks));
         // operatorY.onTrue(new SequentialCommandGroup(

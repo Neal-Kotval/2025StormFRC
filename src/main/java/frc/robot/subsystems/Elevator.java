@@ -45,9 +45,9 @@ public class Elevator extends SubsystemBase {
         config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         motionMagicConfigs = config.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 30; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 300; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 3000; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 45; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 450; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 4500; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         masterMotor.getConfigurator().apply(config);
         masterMotor.setNeutralMode(NeutralModeValue.Brake);

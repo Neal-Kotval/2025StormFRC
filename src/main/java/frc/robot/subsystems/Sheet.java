@@ -13,10 +13,11 @@ public class Sheet extends SubsystemBase {
 
     public Sheet() {
         servo = new Servo(Constants.PWMids.sheet);
+        servo.setBoundsMicroseconds(2000, 1505, 1500, 1495, 1000);
     }
 
-    public void setSheetSpeed(double speed) {
-        servo.set(speed);
+    public void setSheetSpeed(double pos) {
+        servo.set(pos);
     }
     
 }
